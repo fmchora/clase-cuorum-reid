@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#006184">
+  <title>Ustedes son lo suficientemente buenos para enseñar</title>
+  <style>
+    :root {
+      --church-blue: #006184;
+      --church-blue-deep: #003f52;
+      --church-blue-soft: #dceef2;
+      --ink: #24282a;
+      --muted: #5f686c;
+      --paper: #f6f5f1;
+      --white: #fff;
+      --line: rgba(0,97,132,.18);
+      --shadow: 0 24px 70px rgba(23,48,57,.14);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { background: #e9eeef; color: var(--ink); font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    [hidden] { display: none !important; }
+
+    .presentation { position: relative; width: 100vw; height: 100dvh; overflow: hidden; background: var(--paper); isolation: isolate; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      padding: clamp(2rem,5vw,5.2rem) clamp(2rem,7vw,7.5rem) clamp(6.3rem,11vh,8rem);
+      overflow: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(4%);
+      transition: opacity 380ms ease, transform 500ms cubic-bezier(.22,.75,.2,1), visibility 0s linear 500ms;
+      pointer-events: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,97,132,.24) transparent;
+    }
+    .slide.active { opacity: 1; visibility: visible; transform: translateX(0); transition-delay: 0s; pointer-events: auto; }
+    .slide.leaving-left { transform: translateX(-4%); }
+
+    .eyebrow { display: flex; align-items: center; gap: .8rem; margin: 0; color: var(--church-blue); font-size: clamp(.7rem,1vw,.9rem); font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
+    .eyebrow::before { width: 2.6rem; height: 2px; content: ""; flex: 0 0 auto; background: var(--church-blue); }
+    h1, h2, blockquote { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+
+    .title-slide {
+      grid-template-columns: minmax(0,1.15fr) minmax(18rem,.85fr);
+      align-items: center;
+      gap: clamp(2rem,7vw,8rem);
+      background: radial-gradient(circle at 84% 18%, rgba(0,97,132,.12), transparent 24%), linear-gradient(115deg,var(--white) 0 67%,#edf5f6 67% 100%);
+    }
+    .title-copy { position: relative; z-index: 2; }
+    .title-slide h1 { max-width: 12ch; margin: clamp(1.4rem,3vw,2.6rem) 0 1.8rem; font-size: clamp(3rem,6.6vw,6.8rem); line-height: .98; letter-spacing: -.045em; }
+    .title-slide h1 em { color: var(--church-blue); font-style: normal; }
+    .author { margin: 0; color: var(--muted); font-size: clamp(1rem,1.5vw,1.3rem); line-height: 1.55; }
+    .author strong { display: block; color: var(--ink); font-weight: 700; }
+    .visual-mark { position: relative; display: grid; min-height: min(60vh,38rem); place-items: center; }
+    .halo { position: absolute; width: min(31vw,29rem); aspect-ratio: 1; border: 1px solid rgba(0,97,132,.16); border-radius: 50%; }
+    .halo::before, .halo::after { position: absolute; inset: 12%; content: ""; border: 1px solid rgba(0,97,132,.2); border-radius: 50%; }
+    .halo::after { inset: 25%; background: rgba(255,255,255,.56); }
+    .speaker-figure { position: relative; z-index: 2; width: min(27vw,24rem); margin: 0; }
+    .speaker-frame { aspect-ratio: 5/6; overflow: hidden; border: 10px solid rgba(255,255,255,.92); border-radius: .35rem; background: var(--church-blue-soft); box-shadow: 0 26px 65px rgba(23,48,57,.2); }
+    .speaker-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50.53% 18.31%; }
+    .speaker-figure figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; color: var(--muted); font-size: clamp(.72rem,1vw,.88rem); }
+    .speaker-figure figcaption strong { color: var(--ink); }
+    .source-line { position: absolute; right: clamp(2rem,7vw,7.5rem); bottom: clamp(5.5rem,9vh,7rem); left: clamp(2rem,7vw,7.5rem); display: flex; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: clamp(.72rem,1vw,.88rem); }
+
+    .story-slide {
+      align-content: center;
+      background: radial-gradient(circle at 92% 10%, rgba(0,97,132,.09), transparent 25%), linear-gradient(90deg,rgba(0,97,132,.045) 1px,transparent 1px), linear-gradient(rgba(0,97,132,.045) 1px,transparent 1px), var(--paper);
+      background-size: auto,5rem 5rem,5rem 5rem,auto;
+    }
+    .story-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(22rem,1fr); align-items: center; gap: clamp(2rem,6vw,6.5rem); }
+    .story-slide h2 { max-width: 14ch; margin: 1.15rem 0 1.25rem; font-size: clamp(2.45rem,4.8vw,5.2rem); line-height: 1.01; letter-spacing: -.04em; }
+    .story-lead { max-width: 43rem; margin: 0; color: var(--muted); font-size: clamp(1rem,1.45vw,1.28rem); line-height: 1.58; }
+    .story-figure { margin: 1.25rem 0 0; }
+    .story-figure img { display: block; width: min(100%,34rem); max-height: 28vh; object-fit: cover; border-radius: .35rem; filter: saturate(.84); box-shadow: 0 18px 46px rgba(23,48,57,.14); }
+    .story-figure figcaption { margin-top: .45rem; color: var(--muted); font-size: .68rem; }
+
+    .discourse-card { position: relative; padding: clamp(1rem,2vw,1.5rem); border: 1px solid var(--line); border-radius: .4rem; background: rgba(255,255,255,.94); box-shadow: var(--shadow); }
+    .discourse-trigger { display: block; width: 100%; padding: clamp(.7rem,1.5vw,1.25rem); border: 1px solid transparent; border-radius: .32rem; background: transparent; text-align: left; cursor: pointer; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
+    .discourse-trigger:hover { border-color: var(--line); background: #f2f8f9; transform: translateY(-1px); }
+    .discourse-label, .support-label { display: block; margin: 0 0 .65rem; color: var(--church-blue); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .reid-quote { display: block; margin: 0; padding-left: 1.15rem; border-left: 5px solid var(--church-blue); font: 400 clamp(1.25rem,2.35vw,2rem)/1.37 Georgia,"Times New Roman",serif; }
+    .quote-attribution { display: block; margin: .7rem 0 0 1.5rem; color: var(--muted); font-size: .75rem; }
+    .expand-hint { display: flex; align-items: center; justify-content: flex-end; margin: 1rem 0 0; padding-top: .8rem; border-top: 1px solid var(--line); color: var(--church-blue-deep); }
+    .expand-symbol { display: grid; width: 1.6rem; height: 1.6rem; place-items: center; border-radius: 50%; background: var(--church-blue-soft); color: var(--church-blue); font-size: 1rem; }
+    .expand-symbol::before { content: "+"; }
+    .discourse-trigger[aria-expanded="true"] .expand-symbol::before { content: "−"; }
+    .discussion { margin: 0 0 1.1rem; color: var(--ink); font: 400 clamp(1.05rem,1.65vw,1.38rem)/1.35 Georgia,serif; }
+    .reference-buttons { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .reference-button { display: inline-flex; align-items: center; gap: .42rem; padding: .65rem .85rem; border: 1px solid rgba(0,97,132,.28); border-radius: .35rem; background: #f1f8f9; color: var(--church-blue-deep); font-size: .8rem; font-weight: 750; cursor: pointer; transition: color 160ms ease,background 160ms ease,border-color 160ms ease,transform 160ms ease; }
+    .reference-button::after { content: "+"; color: var(--church-blue); font-size: 1rem; line-height: 1; }
+    .reference-button[aria-expanded="true"]::after { content: "−"; }
+    .reference-button:hover { border-color: var(--church-blue); background: var(--church-blue); color: var(--white); transform: translateY(-1px); }
+    .reference-button:hover::after { color: var(--white); }
+
+    .controls { position: fixed; z-index: 30; right: 50%; bottom: clamp(1rem,2.5vh,1.8rem); display: flex; align-items: center; gap: .25rem; padding: .4rem; border: 1px solid rgba(0,63,82,.14); border-radius: 999px; background: rgba(255,255,255,.9); box-shadow: 0 10px 28px rgba(23,48,57,.13); backdrop-filter: blur(14px); transform: translateX(50%); }
+    .control-button { display: grid; width: 2.6rem; height: 2.6rem; padding: 0; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--church-blue-deep); cursor: pointer; transition: background 160ms ease,color 160ms ease,transform 160ms ease; }
+    .control-button:hover { background: var(--church-blue-soft); color: var(--church-blue); }
+    .control-button:active { transform: scale(.92); }
+    .control-button:disabled { opacity: .28; cursor: default; }
+    .control-button:disabled:hover { background: transparent; }
+    .control-button svg { width: 1.12rem; height: 1.12rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .counter { min-width: 3.8rem; color: var(--muted); font-size: .76rem; font-variant-numeric: tabular-nums; text-align: center; }
+    .progress { position: fixed; z-index: 40; top: 0; left: 0; width: 0; height: 4px; background: var(--church-blue); transition: width 350ms ease; }
+    .hint { position: fixed; z-index: 20; right: clamp(1rem,2vw,2rem); bottom: clamp(1.3rem,3vh,2rem); margin: 0; color: var(--muted); font-size: .72rem; }
+
+    .reference-modal { position: fixed; z-index: 100; inset: 0; display: grid; padding: clamp(1rem,4vw,3rem); place-items: center; }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(8,25,31,.7); backdrop-filter: blur(8px); }
+    .modal-panel { position: relative; width: min(48rem,94vw); max-height: min(78vh,46rem); padding: clamp(1.5rem,4vw,3.2rem); overflow: auto; border: 1px solid rgba(255,255,255,.35); border-radius: .45rem; background: var(--white); box-shadow: 0 30px 100px rgba(0,0,0,.34); }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; display: grid; width: 2.5rem; height: 2.5rem; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--white); color: var(--church-blue-deep); font-size: 1.35rem; cursor: pointer; }
+    .modal-kind { margin: 0 3rem .7rem 0; color: var(--church-blue); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .modal-panel h2 { margin: 0 3rem 1.4rem 0; font-size: clamp(1.8rem,4vw,3.1rem); line-height: 1.08; letter-spacing: -.03em; }
+    .modal-panel blockquote { margin: 0; padding-left: 1.4rem; border-left: 5px solid var(--church-blue); font-size: clamp(1.15rem,2.2vw,1.75rem); line-height: 1.48; white-space: pre-line; }
+    .modal-context { margin: 1.4rem 0; color: var(--muted); font-size: .92rem; line-height: 1.6; }
+    .modal-source { margin: 0 0 1.4rem; color: var(--ink); font-size: .8rem; line-height: 1.5; }
+    .official-link { display: inline-flex; align-items: center; gap: .45rem; padding: .75rem 1rem; border-radius: .35rem; background: var(--church-blue); color: var(--white); font-size: .84rem; font-weight: 750; text-decoration: none; }
+    .official-link:hover { background: var(--church-blue-deep); }
+    .official-link::after { content: "↗"; }
+    :focus-visible { outline: 3px solid rgba(0,97,132,.34); outline-offset: 3px; }
+
+    @media (max-width: 900px) { .story-layout { grid-template-columns: minmax(0,1fr) minmax(19rem,.9fr); gap: 2rem; } }
+    @media (max-width: 760px) {
+      .slide { padding: 2rem 1.3rem 6.2rem; align-content: start; }
+      .title-slide, .story-layout { grid-template-columns: 1fr; }
+      .title-slide { align-content: center; }
+      .visual-mark { display: none; }
+      .title-slide h1 { font-size: clamp(2.7rem,12vw,5rem); }
+      .source-line { right: 1.3rem; bottom: 5.7rem; left: 1.3rem; }
+      .source-line span:last-child { display: none; }
+      .story-layout { align-items: start; }
+      .story-slide h2 { font-size: clamp(2.3rem,10vw,4.2rem); }
+      .discourse-card { padding: 1.25rem; }
+      .story-figure img { max-height: 12rem; }
+      .hint { display: none; }
+      .controls { max-width: calc(100vw - 1rem); }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="presentation" id="presentation" aria-label="Presentación: Ustedes son lo suficientemente buenos para enseñar">
+    <div class="progress" id="progress" aria-hidden="true"></div>
+
+    <section class="slide title-slide active" id="portada" data-title="Portada" aria-hidden="false">
+      <div class="title-copy">
+        <p class="eyebrow">Cuórum de élderes · Conferencia General</p>
+        <h1>Ustedes son <em>lo suficientemente buenos</em> para enseñar</h1>
+        <p class="author"><strong>Hermano Gabriel W. Reid</strong>Segundo Consejero de la Presidencia General de la Escuela Dominical</p>
+      </div>
+      <div class="visual-mark">
+        <div class="halo" aria-hidden="true"></div>
+        <figure class="speaker-figure">
+          <div class="speaker-frame"><img src="https://www.churchofjesuschrist.org/imgs/cvrgai42lic8rellm4gkakzg1rqas25ny9vtdnvt/full/!800,/0/default" alt="Retrato oficial del hermano Gabriel W. Reid"></div>
+          <figcaption><strong>Gabriel W. Reid</strong><span>Retrato oficial · 2024</span></figcaption>
+        </figure>
+      </div>
+      <div class="source-line"><span>Clase basada en el mensaje de octubre de 2026</span><span>Recorrido cronológico · Fuentes interactivas</span></div>
+    </section>
+
+    <nav class="controls" aria-label="Controles de la presentación">
+      <button class="control-button" id="previous" type="button" aria-label="Diapositiva anterior" title="Anterior (flecha izquierda)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <span class="counter" id="counter" aria-live="polite">1 / 20</span>
+      <button class="control-button" id="next" type="button" aria-label="Siguiente diapositiva" title="Siguiente (flecha derecha)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="control-button" id="fullscreen" type="button" aria-label="Entrar en pantalla completa" title="Pantalla completa (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+    </nav>
+    <p class="hint">Clic para avanzar · ← → navegar · F pantalla completa</p>
+  </main>
+
+  <div class="reference-modal" id="reference-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-excerpt" aria-hidden="true" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <article class="modal-panel" tabindex="-1">
+      <button class="modal-close" id="modal-close" type="button" aria-label="Cerrar referencia">×</button>
+      <p class="modal-kind" id="modal-kind"></p>
+      <h2 id="modal-title"></h2>
+      <blockquote id="modal-excerpt"></blockquote>
+      <p class="modal-context" id="modal-context"></p>
+      <p class="modal-source" id="modal-source"></p>
+      <a class="official-link" id="modal-link" href="#" target="_blank" rel="noopener noreferrer">Leer fuente oficial</a>
+    </article>
+  </div>
+
+  <script>
+    (() => {
+      const TALK = "https://www.churchofjesuschrist.org/study/general-conference/2026/10/58reid?lang=spa";
+      const ANDERSEN = "https://www.churchofjesuschrist.org/study/general-conference/1993/04/whom-the-lord-calls-the-lord-qualifies?lang=spa";
+      const MCCONKIE = "https://www.churchofjesuschrist.org/study/general-conference/2010/10/gospel-learning-and-teaching?lang=spa";
+      const OAKS = "https://www.churchofjesuschrist.org/study/general-conference/1999/10/gospel-teaching?lang=spa";
+      const HOLLAND = "https://www.churchofjesuschrist.org/study/general-conference/1998/04/a-teacher-come-from-god?lang=spa";
+      const PERRY = "https://www.churchofjesuschrist.org/study/general-conference/2001/04/building-a-community-of-saints?lang=spa";
+      const images = {
+        family: { url: "https://www.churchofjesuschrist.org/imgs/adb5dni2pgiwss8gs9w0r05x0tn8fn5jmnzxiwhv/full/%21500%2C/0/default", alt: "La familia Reid", caption: "La familia Reid · Imagen del discurso original" },
+        chapel: { url: "https://www.churchofjesuschrist.org/imgs/f7aej7f13jwmhi4cot3yavsjuo2i2053z3dsbx6l/full/%21500%2C/0/default", alt: "La capilla del pueblo del hermano Reid", caption: "La capilla del pueblo · Imagen del discurso original" },
+        mission: { url: "https://www.churchofjesuschrist.org/imgs/xc0wf4qj99sso6jwowd75e6xvk1p5rhjpu35xg8p/full/%21500%2C/0/default", alt: "Líderes y misioneros en Sídney, Australia", caption: "Líderes y misioneros en Sídney · Imagen del discurso original" },
+        savior: { url: "https://www.churchofjesuschrist.org/imgs/c73483f3dbe711eea0b8eeeeac1e56690a36be97/full/%21500%2C/0/default", alt: "Representación del Salvador Jesucristo", caption: "El Salvador Jesucristo · Imagen del discurso original" }
+      };
+
+      const sections = [
+        {
+          eyebrow: "Reid comienza con una confesión", title: "“Me sentí inadecuado, abrumado y completamente fuera de lugar”",
+          lead: "Antes de enseñar principios, el hermano Reid se presenta como alguien que también conoce la inseguridad. Su llamamiento no eliminó de inmediato sus dudas.",
+          reid: "Señor, te amo, pero ¿realmente has elegido a la persona adecuada?",
+          connection: "Isaías responde al temor con la presencia de Dios; el élder Andersen confirma que la capacitación del Señor llega mientras servimos.",
+          question: "¿Qué responsabilidad te ha hecho sentir que no eras suficiente?",
+          refs: [
+            { kind: "Escritura relacionada", label: "Isaías 41:10", title: "No temas, porque yo estoy contigo", excerpt: "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te fortalezco; siempre te ayudaré.", context: "Esta promesa responde directamente al sentimiento con el que Reid abre el discurso: Dios no niega nuestra debilidad, pero promete Su presencia y ayuda.", source: "Isaías 41:10 · Citada en las notas del discurso", url: "https://www.churchofjesuschrist.org/study/scriptures/ot/isa/41?lang=spa&id=p10#p10" },
+            { kind: "Cita apostólica relacionada", label: "Élder Holland · 1998", title: "No temas: contigo estoy", excerpt: "Un inolvidable relato proviene de la vida del profeta Jeremías. Este gran hombre se sentía de la misma manera que se sienten la mayoría de los maestros, discursantes u oficiales de la Iglesia cuando son llamados: inexpertos, incapaces y temerosos. “¡Ah, Señor Jehová!”, exclamó, “he aquí, no sé hablar, porque soy niño”. Pero el Señor le aseguró: “No temas delante de ellos, porque contigo estoy... Tú, pues, ciñe tus lomos, levántate, y háblales”.", context: "Jeremías expresó el mismo temor con el que Reid abre su discurso. Holland muestra que la respuesta del Señor no fue negar su debilidad, sino prometer Su presencia y mandarle levantarse y hablar.", source: "Jeffrey R. Holland · “Venido de Dios como maestro” · Abril de 1998", url: HOLLAND }
+          ]
+        },
+        {
+          eyebrow: "De esa experiencia nacen dos preguntas", title: "¿Sé lo suficiente? ¿Soy lo suficientemente bueno?",
+          lead: "Reid convierte su experiencia personal en preguntas que pueden reconocer padres, ministrantes, misioneros y cualquier persona llamada a enseñar.",
+          reid: "¿Sé lo suficiente? ¿Soy lo suficientemente bueno para enseñar el Evangelio de Jesucristo?",
+          connection: "La respuesta no empieza fingiendo saberlo todo: comienza obteniendo la palabra, viviendo dignamente y buscando el Espíritu.",
+          question: "¿Cuál es la diferencia entre prepararse bien y esperar ser perfecto?",
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "DyC 11:21", title: "Primero procura obtener mi palabra", excerpt: "No intentes declarar mi palabra, sino primero procura obtenerla, y entonces será desatada tu lengua; luego, si lo deseas, tendrás mi Espíritu y mi palabra.", context: "Esta revelación no exige omnisciencia; enseña un orden: obtener la palabra y después confiar en el poder de Dios para comunicarla.", source: "Doctrina y Convenios 11:21", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/11?lang=spa&id=p21#p21" },
+            { kind: "Cita de un líder general relacionada", label: "David M. McConkie · 2010", title: "Es natural sentirse inadecuado", excerpt: "Es natural que los maestros se sientan inadecuados. Ustedes deben entender que “la edad, la madurez y la formación intelectual no son de ninguna manera ni en ningún grado necesarios para la comunión con el Señor y su Espíritu”. Las promesas del Señor son ciertas. Si ustedes sinceramente escudriñan las Escrituras y atesoran en su mente las palabras de vida, si guardan los mandamientos con todo su corazón y oran por cada alumno, gozarán de la compañía del Espíritu Santo y recibirán revelación.", context: "David M. McConkie enseña que la edad, la experiencia o la formación intelectual no reemplazan la comunión con el Señor y Su Espíritu.", source: "David M. McConkie · “El aprendizaje y la enseñanza del Evangelio” · Octubre de 2010", url: MCCONKIE }
+          ]
+        },
+        {
+          eyebrow: "Entonces dirige la mirada al Salvador", title: "Jesucristo invita y, al mismo tiempo, hace una promesa",
+          lead: "Reid identifica un modelo en el ministerio del Salvador: cuando Cristo invita a una persona a enseñar, también promete convertirla en lo que necesita que sea.",
+          reid: "Él no esperaba que llegaran a ser maestros de excelencia antes de seguirlo; les prometió que Él los convertiría en quienes Él necesitaba que fueran.",
+          connection: "“Haré que seáis” coloca la transformación en manos de Cristo. La cita del élder Andersen muestra que esa misma promesa continúa en nuestros llamamientos.",
+          question: "¿Qué cambia cuando escuchamos “Yo te haré” en vez de “hazlo solo”?",
+          refs: [
+            { kind: "Escritura del discurso", label: "Marcos 1:17", title: "Haré que seáis pescadores de hombres", excerpt: "Venid en pos de mí, y haré que seáis pescadores de hombres.", context: "El mandato principal es seguir a Cristo; la capacidad para servir aparece como resultado de caminar con Él.", source: "Marcos 1:17 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/mark/1?lang=spa&id=p17#p17" },
+            { kind: "Cita apostólica relacionada", label: "Élder Andersen · 1993", title: "El Señor fortalece durante el servicio", excerpt: "He escuchado al presidente Monson decir que “cuando el Señor llama, el Señor capacita”. Yo sé que eso es verdad y me da la esperanza de que he de superar las insuficiencias que pueda tener. No me cabe la menor duda de que cuando estamos en el servicio del Señor, Él estará con nosotros, nos fortalecerá y nos capacitará. Sé que esto es verdad porque lo he experimentado; he sentido la presencia de Su Espíritu reconfortándome.", context: "La capacidad prometida no siempre precede al llamamiento; con frecuencia llega mientras respondemos y servimos.", source: "Neil L. Andersen · Abril de 1993", url: ANDERSEN }
+          ]
+        },
+        {
+          eyebrow: "Después recuerda a los hijos de Mosíah", title: "Cristo no los definió por su pasado",
+          lead: "Eran jóvenes y habían sido rebeldes, pero sus corazones fueron transformados mediante el poder redentor del Salvador antes de enseñar a los lamanitas.",
+          reid: "Cuando desearon enseñar a sus hermanos, el Señor les prometió: “Os haré instrumentos en mis manos”.",
+          connection: "Alma muestra el propósito de su servicio y Éter explica cómo la gracia convierte la debilidad en fortaleza. El élder Oaks conecta esa transformación con enseñar por amor.",
+          question: "¿Cómo puede una debilidad redimida ayudarnos a comprender y servir mejor a otros?",
+          refs: [
+            { kind: "Escritura del discurso", label: "Alma 17:11", title: "Instrumentos en mis manos", excerpt: "Id entre los lamanitas, vuestros hermanos... y os haré instrumentos en mis manos, para la salvación de muchas almas.", context: "La transformación de los hijos de Mosíah no terminó en ellos mismos; los convirtió en instrumentos para la salvación de otros.", source: "Alma 17:11 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/17?lang=spa&id=p11#p11" },
+            { kind: "Escritura citada por el discurso", label: "Éter 12:27", title: "Las cosas débiles serán fuertes", excerpt: "Doy a los hombres debilidad para que sean humildes... si se humillan ante mí, y tienen fe en mí, entonces haré que las cosas débiles sean fuertes para ellos.", context: "Éter explica doctrinalmente cómo Cristo puede trabajar con personas que todavía reconocen limitaciones reales.", source: "Éter 12:27 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/ether/12?lang=spa&id=p27#p27" },
+            { kind: "Cita apostólica relacionada", label: "Élder Oaks · 1999", title: "Magnificados como instrumentos", excerpt: "El maestro del Evangelio debe enseñar siempre con amor por sus alumnos. Se nos ha enseñado que debemos orar “con toda la energía de nuestros corazones” para estar llenos de este amor. El amor a Dios y el amor a Sus hijos es la razón principal para servir. Los que enseñan por amor serán magnificados como instrumentos en las manos de Aquel a quien sirven.", context: "El élder Oaks usa la misma imagen de “instrumentos” y explica que el amor permite que Dios magnifique el esfuerzo humano.", source: "Dallin H. Oaks · “La enseñanza del Evangelio” · Octubre de 1999", url: OAKS }
+          ]
+        },
+        {
+          eyebrow: "La promesa se extiende a todos nosotros", title: "Enseñamos en muchos lugares, pero nunca solos",
+          lead: "Reid amplía el alcance: salones, campo misional, hogares y conversaciones uno por uno. Toda esa obra pertenece al Señor.",
+          reid: "El Señor nos invita a todos a enseñar Su Evangelio... Su promesa sigue siendo la misma: Él nos ayudará a hacer Su obra. Nunca se ha esperado que hagamos Su obra solos.",
+          connection: "Doctrina y Convenios explica cómo llega esa ayuda: mediante oración, Espíritu, presencia divina y sostén celestial. Holland aclara que sin el Espíritu no existe aprendizaje eterno.",
+          question: "¿Dónde estamos enseñando aunque no tengamos una clase formal?",
+          refs: [
+            { kind: "Escritura relacionada", label: "DyC 42:14", title: "El Espíritu por la oración de fe", excerpt: "Y se os dará el Espíritu por la oración de fe; y si no recibís el Espíritu, no enseñaréis.", context: "Esta revelación identifica al verdadero Maestro y evita que dependamos únicamente de técnicas o elocuencia.", source: "Doctrina y Convenios 42:14", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/42?lang=spa&id=p14#p14" },
+            { kind: "Escritura citada por el discurso", label: "DyC 84:88", title: "Mi Espíritu estará en vuestro corazón", excerpt: "Iré delante de vuestra faz. Estaré a vuestra diestra y a vuestra siniestra, y mi Espíritu estará en vuestro corazón, y mis ángeles alrededor de vosotros, para sosteneros.", context: "La promesa de ayuda que Reid menciona se describe aquí como una presencia que va delante, acompaña y sostiene.", source: "Doctrina y Convenios 84:88", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/84?lang=spa&id=p88#p88" },
+            { kind: "Cita apostólica relacionada", label: "Élder Holland · 1998", title: "Aprendizaje eterno por el Espíritu", excerpt: "Debemos enseñar el Evangelio “por el Espíritu, sí, el Consolador que fue enviado para enseñar la verdad”. Él ha preguntado: ¿enseñamos el Evangelio “por el Espíritu de verdad”, o lo enseñamos “de alguna otra manera”? Y si es de alguna otra manera, “no es de Dios”. En palabras que hacen eco a otros mandamientos, Él ha dicho: “Si no recibís el Espíritu, no enseñaréis”. No se puede llevar a cabo ningún aprendizaje eterno sin la motivación del Espíritu de los cielos. La mayoría de la gente no va a la Iglesia únicamente para buscar unos cuantos conceptos nuevos del Evangelio; van en busca de una experiencia espiritual; desean paz; desean que su fe sea fortalecida y que su esperanza sea renovada; en una palabra, desean ser nutridos “por la buena palabra de Dios”, para ser fortalecidos por los poderes del cielo.", context: "Holland amplía la declaración de Reid: no solo necesitamos ayuda para hablar; quienes escuchan necesitan al Espíritu para recibir verdad eterna.", source: "Jeffrey R. Holland · “Venido de Dios como maestro” · Abril de 1998", url: HOLLAND }
+          ]
+        },
+        {
+          eyebrow: "Antes de hablar de técnicas", title: "El Salvador enseñó primero quiénes debían llegar a ser",
+          lead: "Reid cambia el enfoque de métodos a identidad. Enseñar como Cristo comienza con aprender de Cristo y permitir que Él cambie al maestro.",
+          reid: "Su primera lección no fue sobre la enseñanza, sino sobre el discipulado.",
+          connection: "Doctrina y Convenios invita a aprender de Cristo y caminar en Su Espíritu; Mosíah muestra que el verdadero discipulado implica nacer de Dios.",
+          question: "¿Qué cualidad de discípulo necesito desarrollar para enseñar mejor?",
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "DyC 19:23", title: "Aprende de mí", excerpt: "Aprende de mí y escucha mis palabras; camina en la mansedumbre de mi Espíritu, y en mí tendrás paz.", context: "Antes de representar al Maestro, el discípulo escucha Sus palabras y aprende Su manera de caminar.", source: "Doctrina y Convenios 19:23", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/19?lang=spa&id=p23#p23" },
+            { kind: "Escritura relacionada", label: "Mosíah 27:25–26", title: "Llegar a ser nuevas criaturas", excerpt: "Todo el género humano... debe nacer otra vez; sí, nacer de Dios, ser cambiado... y así llega a ser nueva criatura.", context: "Esta transformación explica por qué Reid usa a los hijos de Mosíah como ejemplo de discípulos preparados para enseñar.", source: "Mosíah 27:25–26 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/27?lang=spa&id=p25-p26#p25" },
+            { kind: "Cita de un líder general relacionada", label: "David M. McConkie · 2010", title: "La obra del maestro comienza viviendo", excerpt: "Lleven a la práctica las cosas que aprendan. Cuando Hyrum Smith tenía el deseo de llegar a ser parte de esta gran obra de los últimos días, el Señor le dijo: “He aquí, ésta es tu obra: Guardar mis mandamientos, sí, con toda tu alma, mente y fuerza”. Como maestros, nuestra obra, ante todo, es guardar los mandamientos con toda nuestra alma, mente y fuerza.", context: "McConkie confirma la secuencia de Reid: antes de la actuación docente está la vida del discípulo.", source: "David M. McConkie · Octubre de 2010", url: MCCONKIE }
+          ]
+        },
+        {
+          eyebrow: "Reid identifica el corazón del discipulado", title: "Amar al Señor y amar a quienes enseñamos",
+          lead: "Los dos grandes mandamientos se convierten en el marco de todo lo que sigue en el discurso: el maestro ama a Dios y, por causa de ese amor, ama a las personas.",
+          reid: "Para todo maestro del Evangelio, para cada discípulo, estos dos grandes mandamientos se convierten en una sencilla invitación: Amar al Señor y amar a quienes enseñan.",
+          connection: "Mateo contiene el mandamiento del Salvador; el élder Oaks muestra que esos dos amores son también la razón principal para servir y enseñar.",
+          question: "¿Cómo se nota en una clase que el maestro ama realmente a quienes enseña?",
+          refs: [
+            { kind: "Escritura del discurso", label: "Mateo 22:37–40", title: "Los dos grandes mandamientos", excerpt: "Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma y con toda tu mente... Amarás a tu prójimo como a ti mismo.", context: "Reid no añade un método nuevo: aplica directamente los dos grandes mandamientos a la responsabilidad de enseñar.", source: "Mateo 22:37–40 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/matt/22?lang=spa&id=p36-p40#p36" },
+            { kind: "Cita apostólica relacionada", label: "Élder Oaks · 1999", title: "La razón principal para servir", excerpt: "El amor tiene dos manifestaciones. Cuando se nos llama a enseñar, debemos aceptar nuestro llamamiento y enseñar motivados por nuestro amor a Dios el Eterno Padre y a Su Hijo, Jesucristo. Además, el maestro del Evangelio debe enseñar siempre con amor por sus alumnos. Se nos ha enseñado que debemos orar “con toda la energía de nuestros corazones” para estar llenos de este amor. El amor a Dios y el amor a Sus hijos es la razón principal para servir.", context: "Oaks usa la misma estructura doble que Reid y explica por qué el amor debe preceder a las técnicas.", source: "Dallin H. Oaks · Octubre de 1999", url: OAKS }
+          ]
+        },
+        {
+          eyebrow: "Reid vuelve a su niñez", title: "Su hogar fue su primer salón de clase",
+          lead: "Trece hijos, dos padres fieles y otros familiares aprendían juntos. La educación formal limitada de su madre no impidió una enseñanza profundamente espiritual.",
+          reid: "Algunas de las lecciones más importantes que enseñaron fueron las que captamos simplemente al observarlos.",
+          connection: "Deuteronomio describe la enseñanza dentro de la vida diaria; el élder Oaks declara que los padres enseñan continuamente mediante ejemplo y precepto.",
+          question: "¿Qué están aprendiendo de Cristo quienes observan nuestra vida en casa?",
+          image: images.family,
+          refs: [
+            { kind: "Escritura relacionada", label: "Deuteronomio 6:6–7", title: "Les hablarás estando en tu casa", excerpt: "Estas palabras que yo te mando hoy estarán sobre tu corazón; y se las repetirás a tus hijos y les hablarás de ellas estando en tu casa.", context: "El pasaje refleja el hogar de los Reid: el Evangelio se aprende dentro de una vida compartida, no solo en una lección formal.", source: "Deuteronomio 6:6–7 · Antiguo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/ot/deut/6?lang=spa&id=p6-p7#p6" },
+            { kind: "Cita apostólica relacionada", label: "Élder Oaks · 1999", title: "Los maestros más importantes", excerpt: "Nuestra preocupación en cuanto a la enseñanza del Evangelio no se limita solamente a aquellos que son llamados a enseñar en los quórumes del sacerdocio, en la Primaria, la Sociedad de Socorro, la Escuela Dominical, las Mujeres Jóvenes o en otra asignación. En el grandioso plan de salvación del Señor no hay maestros más importantes que los padres que enseñan constantemente a sus hijos mediante el ejemplo y el precepto. Cada uno de nosotros enseña mediante el ejemplo a quienes nos rodean. Aun los niños se enseñan mutuamente. Cada misionero es un maestro. Y cada líder es un maestro. La enseñanza del Evangelio es universal e importante. La ocupación de nuestro Salvador fue la de maestro; Él fue el Maestro ideal y nos invita a todos a emularlo en ese gran servicio.", context: "Oaks explica doctrinalmente por qué el ejemplo de los padres de Reid tuvo una influencia tan duradera.", source: "Dallin H. Oaks · Octubre de 1999", url: OAKS }
+          ]
+        },
+        {
+          eyebrow: "Después recuerda a sus maestros de la Iglesia", title: "Preparaban lecciones, pero él recuerda cuánto lo amaban",
+          lead: "Muchas clases de la Primaria se realizaban bajo un árbol de mango. Sus maestros conocían personalmente a los niños, incluso por nombre.",
+          reid: "Su amor nos ayudó a sentir el amor del Salvador; y sentir el amor de Él nos ayudó a sentir la veracidad de Su Evangelio.",
+          connection: "Juan enseña que el amor identifica a los discípulos. El recuerdo del presidente Monson confirma que escuchar y amar puede hacer que una enseñanza permanezca toda la vida.",
+          question: "¿Qué recuerdas de un maestro que te ayudó a sentirte visto y amado?",
+          image: images.chapel,
+          refs: [
+            { kind: "Escritura del discurso", label: "Juan 13:34–35", title: "Como yo os he amado", excerpt: "Que os améis unos a otros; como yo os he amado... En esto conocerán todos que sois mis discípulos, si tenéis amor los unos por los otros.", context: "Los maestros que Reid recuerda hicieron visible el amor del Salvador y, por ello, ayudaron a sus alumnos a reconocer la verdad.", source: "Juan 13:34–35 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/john/13?lang=spa&id=p34-p35#p34" },
+            { kind: "Cita profética relacionada", label: "Presidente Monson · citado en 2010", title: "Una maestra que escuchaba y quería", excerpt: "El presidente Thomas S. Monson aún atesora el recuerdo de la maestra de la Escuela Dominical de su niñez: “De pequeño, tuve la experiencia de contar con la influencia de una maestra eficaz e inspirada que nos escuchaba y nos quería. Se llamaba Lucy Gertsch. En la clase de la Escuela Dominical, ella nos enseñaba acerca de la creación del mundo, de la caída de Adán y del sacrificio expiatorio de Jesús. Traía a nuestro salón de clases como invitados de honor a Moisés, Josué, Pedro, Tomás, Pablo y, claro está, a Cristo; y, aunque no los veíamos, aprendimos a amarlos, a honrarlos y a emularlos”.", context: "El presidente Thomas S. Monson recordaba a Lucy Gertsch por la misma razón que Reid recuerda a sus maestros: lo conocía, escuchaba y amaba.", source: "Thomas S. Monson · citado por David M. McConkie · Octubre de 2010", url: MCCONKIE }
+          ]
+        },
+        {
+          eyebrow: "La experiencia continúa en Sídney", title: "Para amar mejor a las personas, profundizaron su amor por Cristo",
+          lead: "Al servir con más de quinientos misioneros de muchos países, el hermano y la hermana Reid aprendieron que el amor por el Salvador cambia la forma de ver a Sus hijos.",
+          reid: "La manera más segura de amar de verdad a quienes enseñábamos era profundizar nuestro amor por Aquel de quien enseñábamos.",
+          connection: "Juan muestra que nuestro amor responde al amor previo de Cristo; Moroni enseña que la caridad necesaria para ver como Él ve es un don que se pide.",
+          question: "¿Qué cambiaría si viéramos a cada hermano como Cristo lo ve?",
+          image: images.mission,
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "1 Juan 4:19", title: "Él nos amó primero", excerpt: "Nosotros le amamos a él, porque él nos amó primero.", context: "Reid explica que amar a Cristo es la fuente desde la cual aprendemos a amar a quienes enseñamos.", source: "1 Juan 4:19 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/1-jn/4?lang=spa&id=p19#p19" },
+            { kind: "Escritura relacionada", label: "Moroni 7:48", title: "Pedid ser llenos de este amor", excerpt: "Pedid al Padre con toda la energía de vuestros corazones, que seáis llenos de este amor que él ha otorgado a todos los que son discípulos verdaderos de su Hijo Jesucristo.", context: "Moroni profundiza la experiencia de Sídney: la capacidad de amar como Cristo no se finge; se busca y se recibe como don espiritual.", source: "Moroni 7:48 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/moro/7?lang=spa&id=p48#p48" }
+          ]
+        },
+        {
+          eyebrow: "Reid observa al Maestro de maestros", title: "Jesús comenzó centrándose en las personas",
+          lead: "Ante la multitud en las Américas, el Salvador no comenzó con un sermón. Invitó a cada persona a acercarse y obtener por sí misma un testimonio de Él.",
+          reid: "Invitó a cada persona a venir a Él una por una para que supieran por sí mismas que Él era Jesucristo. Solo entonces les enseñó Su doctrina.",
+          connection: "3 Nefi conserva esa secuencia: venir, ver, palpar y saber. El élder Oaks explica que un maestro semejante a Cristo concentra su atención en las personas.",
+          question: "¿Qué necesita una persona concreta del cuórum, no solo el grupo en general?",
+          image: images.savior,
+          refs: [
+            { kind: "Escritura del discurso", label: "3 Nefi 11:14–15", title: "Yendo uno por uno", excerpt: "Levantaos y venid a mí... y esto hicieron, yendo uno por uno, hasta que todos hubieron llegado; y vieron con los ojos y palparon con las manos, y supieron con certeza.", context: "La Escritura muestra exactamente el modelo descrito por Reid: la experiencia personal con Cristo precedió a la enseñanza doctrinal.", source: "3 Nefi 11:14–15 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/11?lang=spa&id=p14-p15#p14" },
+            { kind: "Cita apostólica relacionada", label: "Élder Oaks · 1999", title: "Concentrarse en aquellos a quienes enseña", excerpt: "El maestro del Evangelio, tal como el Maestro a quien servimos, debe concentrarse totalmente en aquellos a quienes enseña. Su completa concentración se debe guiar a las necesidades de sus ovejas: el bienestar de sus alumnos. El maestro del Evangelio no debe dedicarse a sí mismo. Quien comprenda este principio no habrá de considerar su llamamiento como simplemente “dar o presentar una lección”, porque tal definición contempla la enseñanza desde el punto de vista del maestro y no del alumno.", context: "Oaks expresa como principio docente lo que Reid observa en 3 Nefi: la enseñanza de Cristo está orientada a las personas, no a la actuación del maestro.", source: "Dallin H. Oaks · Octubre de 1999", url: OAKS }
+          ]
+        },
+        {
+          eyebrow: "La enseñanza formal terminó", title: "Pero el amor del Salvador no terminó",
+          lead: "Jesús invitó al pueblo a regresar a casa y meditar. Al percibir el deseo de sus corazones, permaneció, sanó a sus enfermos, bendijo a sus niños y oró por ellos.",
+          reid: "Podemos decir que la “clase” había terminado, pero no Su amor por la gente.",
+          connection: "3 Nefi muestra que Cristo percibió necesidades que no formaban parte del plan inicial. Su compasión convirtió la conclusión de una enseñanza en ministración personal.",
+          question: "¿Cómo podemos seguir amando y ministrando cuando la reunión ya terminó?",
+          image: images.savior,
+          refs: [
+            { kind: "Escritura del discurso", label: "3 Nefi 17:6–9", title: "Mis entrañas rebosan de compasión", excerpt: "¿Tenéis enfermos entre vosotros? Traedlos aquí... y yo los sanaré, porque tengo compasión de vosotros; mis entrañas rebosan de misericordia.", context: "El Salvador modificó lo que iba a hacer porque percibió la fe y el deseo de las personas que tenía delante.", source: "3 Nefi 17:6–9 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=spa&id=p6-p9#p6" },
+            { kind: "Escritura del discurso", label: "3 Nefi 17:21", title: "Los bendijo uno por uno", excerpt: "Tomó a sus niños pequeños, uno por uno, y los bendijo, y rogó al Padre por ellos.", context: "La atención individual no fue una introducción decorativa: continuó hasta el final de Su ministración.", source: "3 Nefi 17:21 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=spa&id=p21#p21" }
+          ]
+        },
+        {
+          eyebrow: "De ese modelo, Reid extrae una conclusión", title: "La enseñanza centrada en Cristo se basa en relaciones",
+          lead: "Conocer y amar a las personas no es una actividad separada de enseñar el Evangelio; crea el contexto donde pueden acercarse más al Salvador.",
+          reid: "El nuevo e inspirado horario dominical ofrece oportunidades semanales para conocer y amar a quienes enseñamos, ayudándoles a acercarse más al Salvador y a profundizar su conversión.",
+          connection: "Juan une discipulado y amor visible. El élder Perry muestra que una comunidad de santos existe para servir y bendecir, no solo para reunirse.",
+          question: "¿Cómo puede el cuórum ser una hermandad durante toda la semana, no solo una clase?",
+          refs: [
+            { kind: "Escritura del discurso", label: "Juan 13:34–35", title: "En esto conocerán que sois mis discípulos", excerpt: "En esto conocerán todos que sois mis discípulos, si tenéis amor los unos por los otros.", context: "La relación de amor entre discípulos es parte del testimonio que una clase centrada en Cristo debe cultivar.", source: "Juan 13:34–35 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/john/13?lang=spa&id=p34-p35#p34" },
+            { kind: "Cita apostólica relacionada", label: "Élder Perry · 2001", title: "Una comunidad de santos", excerpt: "En cualquier comunidad de santos, todos trabajamos para servirnos unos a otros de la mejor forma posible. Nuestra labor tiene un propósito más elevado, pues su fin es bendecir a los demás y edificar el reino de Dios. Nuestra comunidad de santos no es exclusiva, sino inclusiva, edificada sobre el fundamento de los apóstoles y profetas, siendo la principal piedra del ángulo Jesucristo mismo. Está abierta a todos los que aman, aprecian y tienen compasión por los hijos de nuestro Padre Celestial. Nuestra comunidad tiene un centro espiritual que nos permite vivir con la compañía del Espíritu Santo que guía y dirige nuestra vida.", context: "Perry amplía la enseñanza de Reid: una relación de convenio se expresa en servicio que bendice a los demás y edifica el reino de Dios.", source: "L. Tom Perry · “La edificación de una comunidad de santos” · Abril de 2001", url: PERRY }
+          ]
+        },
+        {
+          eyebrow: "Entonces plantea una dificultad práctica", title: "“¿Cómo puedo enseñar todo en veinticinco minutos?”",
+          lead: "Reid no responde intentando comprimir más contenido. Cambia la pregunta y, con ella, cambia la definición de una buena lección.",
+          reid: "Tal vez una mejor pregunta sea: “¿Cómo puedo ayudar a quienes enseño a conectarse con el Salvador más pronto?”.",
+          connection: "3 Nefi muestra una invitación breve y directa a venir a Cristo. Doctrina y Convenios mide la enseñanza por edificación y gozo compartidos, no por volumen de información.",
+          question: "Si solo pudiéramos enseñar una verdad, ¿cuál acercaría más al cuórum a Cristo?",
+          refs: [
+            { kind: "Escritura del discurso", label: "3 Nefi 11:14–15", title: "Venid a mí", excerpt: "Levantaos y venid a mí... y esto hicieron, yendo uno por uno... y supieron con certeza.", context: "La experiencia se centró en una invitación esencial: venir al Salvador y saber por uno mismo quién es Él.", source: "3 Nefi 11:14–15 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/11?lang=spa&id=p14-p15#p14" },
+            { kind: "Escritura relacionada", label: "DyC 50:22", title: "Ambos son edificados", excerpt: "El que la predica y el que la recibe se comprenden el uno al otro, y ambos son edificados y se regocijan juntamente.", context: "Esta escritura ofrece una medida más espiritual que “terminar la lección”: comprensión, edificación y gozo mediante el Espíritu.", source: "Doctrina y Convenios 50:22", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/50?lang=spa&id=p22#p22" }
+          ]
+        },
+        {
+          eyebrow: "Cristo debe permanecer visible", title: "El maestro no se coloca delante del Maestro",
+          lead: "Reid cita a Dallin H. Oaks para aclarar que una clase no debe terminar con admiración por el instructor, sino con mayor amor por Jesucristo.",
+          reid: "El propósito de cada lección no es que las personas salgan hablando acerca de la persona que enseñó la clase; sino que salgan pensando en el Salvador y amándolo.",
+          connection: "El discurso de Oaks desarrolla la misma imagen y advierte contra el engrandecimiento personal. 2 Nefi muestra una enseñanza que habla, profetiza y escribe para conducir a Cristo.",
+          question: "¿Qué prácticas pueden hacer que una clase trate más del maestro que del Salvador?",
+          refs: [
+            { kind: "Cita apostólica citada por Reid", label: "Élder Oaks · 1999", title: "Nunca obstaculizar la vista", excerpt: "Al concentrarse en las necesidades de sus alumnos, el maestro del Evangelio nunca obstaculizará la vista hacia al Maestro poniéndose por delante o distrayendo la lección con actitudes de engrandecimiento personal o intereses mezquinos. El maestro del Evangelio no predica para “hacerse popular” o “por causa de las riquezas y los honores”, sino que sigue el maravilloso ejemplo del Libro de Mormón en cuanto a que “el predicador no era de más estima que el oyente, ni el maestro era mejor que el discípulo”. Ambos siempre han de mirar hacia el Maestro.", context: "Reid cita una versión abreviada de esta misma enseñanza. La fuente completa explica por qué la atención debe permanecer en Cristo y en las necesidades del alumno.", source: "Dallin H. Oaks · “La enseñanza del Evangelio” · Octubre de 1999", url: OAKS },
+            { kind: "Escritura relacionada", label: "2 Nefi 25:26", title: "Hablamos de Cristo", excerpt: "Hablamos de Cristo, nos regocijamos en Cristo, predicamos de Cristo, profetizamos de Cristo y escribimos según nuestras profecías.", context: "La declaración de Nefi describe una enseñanza que dirige deliberadamente el pensamiento, el gozo y la esperanza hacia Jesucristo.", source: "2 Nefi 25:26 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/2-ne/25?lang=spa&id=p26#p26" }
+          ]
+        },
+        {
+          eyebrow: "Así redefine Reid el éxito", title: "Si salen más cerca del Salvador, enseñamos lo suficiente",
+          lead: "La medida no es cuánto material se cubrió ni cuán impresionante fue la presentación, sino el movimiento espiritual hacia Jesucristo.",
+          reid: "Si los miembros de la clase salen de la lección sintiéndose más cerca del Salvador que cuando llegaron, habremos enseñado lo suficiente.",
+          connection: "Doctrina y Convenios describe el fruto de una enseñanza espiritual. El élder Oaks enseña explícitamente que el éxito se mide por el impacto en la vida de las personas.",
+          question: "¿Qué señales mostrarían que una clase realmente acercó a alguien a Cristo?",
+          refs: [
+            { kind: "Escritura relacionada", label: "DyC 50:22", title: "Edificados y gozosos", excerpt: "El que la predica y el que la recibe se comprenden el uno al otro, y ambos son edificados y se regocijan juntamente.", context: "El versículo da frutos observables que armonizan con la medida propuesta por Reid: comprensión, edificación y gozo en el Espíritu.", source: "Doctrina y Convenios 50:22", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/50?lang=spa&id=p22#p22" },
+            { kind: "Cita apostólica relacionada", label: "Élder Oaks · 1999", title: "El impacto en la vida", excerpt: "El maestro del Evangelio se preocupa por el resultado de sus enseñanzas y medirá el éxito de su labor y de su testimonio en base al impacto que haya logrado en la vida de sus alumnos. El maestro del Evangelio nunca estará satisfecho con solamente presentar un mensaje o predicar un sermón. El maestro excelente del Evangelio desea ayudar en la obra del Señor de brindar la vida eterna a Sus hijos.", context: "Oaks explica por qué presentar información no basta: la enseñanza participa en la obra del Señor de brindar vida eterna a Sus hijos.", source: "Dallin H. Oaks · Octubre de 1999", url: OAKS }
+          ]
+        },
+        {
+          eyebrow: "El discurso vuelve a la pregunta inicial", title: "La respuesta es: ¡Sí!",
+          lead: "Después de recorrer el modelo de Cristo y las experiencias de amor, Reid responde directamente si somos suficientemente buenos para enseñar.",
+          reid: "No porque lo sepan todo. No porque tengan todas las habilidades de enseñanza. No porque siempre se sientan capaces o seguros. ¡Sino porque pueden amar al Maestro de maestros!",
+          connection: "Éter explica cómo la gracia trabaja con la debilidad. El élder Andersen confirma que el Señor capacita, y Doctrina y Convenios promete palabras en la hora precisa.",
+          question: "¿Qué excusa personal podemos entregar hoy al Salvador?",
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "Éter 12:27", title: "Basta mi gracia", excerpt: "Basta mi gracia a todos los hombres que se humillan ante mí; porque si se humillan ante mí, y tienen fe en mí, entonces haré que las cosas débiles sean fuertes para ellos.", context: "La respuesta “sí” no declara que ya somos perfectos; declara que la gracia de Cristo es suficiente para trabajar con nuestra humildad y fe.", source: "Éter 12:27 · Libro de Mormón", url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/ether/12?lang=spa&id=p27#p27" },
+            { kind: "Cita apostólica relacionada", label: "Élder Andersen · 1993", title: "Nos fortalecerá y capacitará", excerpt: "He escuchado al presidente Monson decir que “cuando el Señor llama, el Señor capacita”. Yo sé que eso es verdad y me da la esperanza de que he de superar las insuficiencias que pueda tener. No me cabe la menor duda de que cuando estamos en el servicio del Señor, Él estará con nosotros, nos fortalecerá y nos capacitará. Sé que esto es verdad porque lo he experimentado; he sentido la presencia de Su Espíritu reconfortándome.", context: "Andersen formula en una sola promesa la respuesta que Reid desarrolla durante todo el mensaje.", source: "Neil L. Andersen · Abril de 1993", url: ANDERSEN },
+            { kind: "Escritura citada por el discurso", label: "DyC 84:85", title: "En la hora precisa", excerpt: "Atesorad constantemente en vuestras mentes las palabras de vida, y os será dado en la hora precisa la porción que le será medida a cada hombre.", context: "El Señor no reemplaza la preparación, pero promete completar esa preparación con revelación ajustada a la persona y al momento.", source: "Doctrina y Convenios 84:85", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/84?lang=spa&id=p85#p85" }
+          ]
+        },
+        {
+          eyebrow: "La promesa continúa", title: "Cristo formará gradualmente al maestro",
+          lead: "La suficiencia no es un estado alcanzado de una vez. Es una relación continua en la que amamos, aprendemos, servimos y somos transformados.",
+          reid: "Él les enseñará, caminará a su lado y gradualmente los convertirá en los maestros que Él sabe que pueden llegar a ser.",
+          connection: "Doctrina y Convenios describe al Señor delante, a los lados y en el corazón. McConkie promete que Él magnificará a quienes estudien, vivan y busquen Su Espíritu.",
+          question: "¿Qué crecimiento gradual ya puedes reconocer en tu servicio?",
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "DyC 84:88", title: "Caminará a nuestro lado", excerpt: "Iré delante de vuestra faz. Estaré a vuestra diestra y a vuestra siniestra, y mi Espíritu estará en vuestro corazón.", context: "La imagen de esta revelación coincide directamente con la promesa final de Reid de que Cristo caminará al lado del maestro.", source: "Doctrina y Convenios 84:88", url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/84?lang=spa&id=p88#p88" },
+            { kind: "Cita de un líder general relacionada", label: "David M. McConkie · 2010", title: "El Señor nos magnificará", excerpt: "Queridos maestros, ustedes son uno de los grandes milagros de esta Iglesia. Tienen un deber sagrado. Los amamos y tenemos confianza en ustedes. Sé que si escudriñamos las Escrituras, y vivimos de tal modo que seamos dignos de tener la compañía del Espíritu Santo, el Señor nos magnificará en nuestros llamamientos y responsabilidades para que podamos cumplir con nuestro mandato del Señor. Ruego que todos lo hagamos, es mi oración, en el nombre de Jesucristo. Amén.", context: "McConkie explica prácticas concretas mediante las cuales se recibe la formación gradual que Reid promete.", source: "David M. McConkie · Octubre de 2010", url: MCCONKIE }
+          ]
+        },
+        {
+          eyebrow: "Reid termina con una invitación", title: "Vengan al Maestro de maestros",
+          lead: "El discurso concluye donde comenzó: no en la confianza en uno mismo, sino en una relación más profunda con Jesucristo.",
+          reid: "Aprendan de Él. Ámenlo. Al hacerlo, Él les ayudará a amar a quienes enseñan... Para enseñar como el Salvador, ¡debemos amar como el Salvador!",
+          connection: "Juan enseña que nuestro amor nace del amor de Cristo y que Sus discípulos se reconocen por amar como Él. Así, las Escrituras reúnen toda la trayectoria del discurso.",
+          question: "¿Qué acción concreta demostraría más amor a quienes enseñamos o ministramos?",
+          image: images.savior,
+          refs: [
+            { kind: "Escritura citada por el discurso", label: "1 Juan 4:19", title: "Porque Él nos amó primero", excerpt: "Nosotros le amamos a él, porque él nos amó primero.", context: "El amor con el que enseñamos no comienza en nuestra capacidad personal; comienza recibiendo y respondiendo al amor del Salvador.", source: "1 Juan 4:19 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/1-jn/4?lang=spa&id=p19#p19" },
+            { kind: "Escritura del discurso", label: "Juan 13:34–35", title: "Como yo os he amado", excerpt: "Que os améis unos a otros; como yo os he amado... En esto conocerán todos que sois mis discípulos.", context: "El mandamiento finaliza el mismo arco que Reid construye: venir a Cristo, aprender Su amor y reproducirlo en la forma de enseñar y ministrar.", source: "Juan 13:34–35 · Nuevo Testamento", url: "https://www.churchofjesuschrist.org/study/scriptures/nt/john/13?lang=spa&id=p34-p35#p34" }
+          ]
+        }
+      ];
+
+      const discourseParts = [
+        `Poco después de ser sostenido como miembro de la Presidencia General de la Escuela Dominical, me sentí inadecuado, abrumado y completamente fuera de lugar.
+
+Más tarde me di cuenta de que no era el único que trataba de encontrarle sentido, ya que vi un titular de noticias que decía: “Entre los nuevos líderes de la Escuela Dominical se encuentran hombres que se dedican a la educación en la Iglesia y un jugador de la NFL [Liga Nacional de Fútbol Americano]”.
+
+Cada vez que leo ese titular, sonrío y pienso: “Afortunadamente, en ese titular no se mencionaron los nombres, ¡porque realmente espero que la gente piense que soy uno de los académicos!”. Hoy en especial me siento así.
+
+Aunque el titular me hace reír, no siempre calma este sentimiento que tengo dentro: “Señor, te amo, pero ¿realmente has elegido a la persona adecuada?”.`,
+
+        `Quizás ustedes se hayan hecho preguntas similares:
+
+¿Sé lo suficiente?
+
+¿Soy lo suficientemente bueno para enseñar el Evangelio de Jesucristo?`,
+
+        `Al reflexionar sobre el Salvador, el Maestro de maestros, he notado un hermoso modelo: a menudo, cuando Él invitaba a alguien a enseñar Su Evangelio, también le hacía una promesa.
+
+A un pequeño grupo de pescadores comunes y corrientes en las costas de Galilea, hombres de corazón dispuesto pero con poca experiencia, les dijo: “Venid en pos de mí, y haré que seáis pescadores de hombres”. Él no esperaba que llegaran a ser maestros de excelencia antes de seguirlo; les prometió que Él los convertiría en quienes Él necesitaba que fueran.`,
+
+        `En el Libro de Mormón: Otro Testamento de Jesucristo, los hijos de Mosíah eran todavía jóvenes cuando fueron a enseñar el Evangelio a los lamanitas. El pasado de ellos estaba marcado por la rebeldía, pero sus corazones habían sido transformados mediante el poder redentor del Salvador. Cuando desearon enseñar a sus hermanos, el Señor les prometió: “Os haré instrumentos en mis manos”.`,
+
+        `El Señor nos invita a todos a enseñar Su Evangelio. Dondequiera que enseñemos —en salones de clase, en el campo misional, en nuestros hogares o uno por uno—, Su promesa sigue siendo la misma: Él nos ayudará a hacer Su obra.
+
+Nunca se ha esperado que hagamos Su obra solos.`,
+
+        `Antes de que el Salvador enseñara a Sus discípulos adónde ir y qué enseñar, les enseñó quiénes debían llegar a ser. Su primera lección no fue sobre la enseñanza, sino sobre el discipulado.
+
+Y la esencia del discipulado, y de todo lo que Él hace, es el amor.`,
+
+        `Cuando se le preguntó cuál era el mandamiento más grande, el Salvador enseñó, primero, a amar al Señor nuestro Dios con todo nuestro corazón, alma y mente; y segundo, a amar a nuestro prójimo como a nosotros mismos.
+
+Para todo maestro del Evangelio, para cada discípulo, estos dos grandes mandamientos se convierten en una sencilla invitación: Amar al Señor y amar a quienes enseñan.`,
+
+        `Mis primeros maestros del Evangelio fueron mis padres. Nuestro hogar en la aldea de Leone, Samoa Estadounidense, se convirtió en mi primer salón de clase para el aprendizaje del Evangelio. Bajo un mismo techo, trece hijos, dos padres fieles y, a menudo, otros parientes aprendimos y vivimos el Evangelio juntos.
+
+Mi padre se unió a la Iglesia cuando era joven; mi madre tenía una educación formal limitada. Sin embargo, juntos poseían algo mucho más importante: una fe profunda y perdurable en Jesucristo. Amaban al Señor con todo su corazón y, debido a que lo amaban a Él, nos amaban a nosotros de una manera que nos ayudó a amarlo a Él también.
+
+Algunas de las lecciones más importantes que enseñaron fueron las que captamos simplemente al observarlos.`,
+
+        `Esas verdades fueron recalcadas con amor por maestros fieles en esa pequeña capilla de la aldea.
+
+Muchas de mis primeras clases de la Primaria se llevaron a cabo bajo la sombra de un árbol de mango.
+
+Nuestros maestros preparaban fielmente cada lección, pero lo que más recuerdo es cuánto nos amaban. Nos conocían personalmente, incluso por nombre. Su amor nos ayudó a sentir el amor del Salvador; y sentir el amor de Él nos ayudó a sentir la veracidad de Su Evangelio. Al mirar atrás, me doy cuenta de que mis padres y mis maestros de la Iglesia seguían el modelo del Maestro de maestros.
+
+El impacto de un maestro del Evangelio no reside solo en el mensaje, sino en el amor del mensajero.`,
+
+        `Mi esposa y yo siempre atesoraremos el tiempo que pasamos en la Misión Australia Sídney. Nos enamoramos de la maravillosa gente de Sídney y tuvimos la bendición de servir junto a más de quinientos misioneros de más de treinta países.
+
+Aprendimos que la manera más segura de amar de verdad a quienes enseñábamos era profundizar nuestro amor por Aquel de quien enseñábamos. A medida que nuestro amor por el Salvador se profundizaba, Él nos enseñó a ver a los misioneros como Él los ve y a amarlos como Él los ama.`,
+
+        `Cuando el Salvador resucitado se apareció al pueblo de las Américas, no comenzó pronunciando un sermón ante la multitud; comenzó centrándose en las personas. Invitó a cada persona a venir a Él una por una para que supieran por sí mismas que Él era Jesucristo.
+
+Solo entonces les enseñó Su doctrina y las ordenanzas de Su Evangelio.`,
+
+        `Más tarde, después de enseñar muchas otras verdades preciosas, Jesús invitó a las personas a regresar a casa y meditar en lo que habían aprendido. Podemos decir que la “clase” había terminado, pero no Su amor por la gente. Cuando percibió el deseo de sus corazones, se llenó de compasión. Sanó a sus enfermos, bendijo a sus niños y oró por ellos uno por uno.
+
+Para el Maestro de maestros, cada lección estaba inspirada por el amor que sentía por aquellos a quienes enseñaba.`,
+
+        `La enseñanza centrada en Cristo se basa en las relaciones. El nuevo e inspirado horario dominical ofrece oportunidades semanales para conocer y amar a quienes enseñamos, ayudándoles a acercarse más al Salvador y a profundizar su conversión.
+
+Ese es Su modelo para cada lección del Evangelio, incluso para las más breves.`,
+
+        `Algunos se preguntarán: “¿Cómo puedo enseñar todo en veinticinco minutos?”.
+
+Tal vez una mejor pregunta sea: “¿Cómo puedo ayudar a quienes enseño a conectarse con el Salvador más pronto?”.`,
+
+        `El presidente Dallin H. Oaks enseñó: “El maestro del Evangelio nunca obstaculizará la vista [del alumno] hacia el Maestro poniéndose por delante”.
+
+El propósito de cada lección no es que las personas salgan hablando acerca de la persona que enseñó la clase; sino que salgan pensando en el Salvador y amándolo.`,
+
+        `Las lecciones de veinticinco minutos no son una limitación; son una invitación a centrarnos, con más claridad que nunca, en ayudar a los demás a venir al Salvador.
+
+Si los miembros de la clase salen de la lección sintiéndose más cerca del Salvador que cuando llegaron, habremos enseñado lo suficiente.`,
+
+        `Hermanos y hermanas, si se preguntan si son lo suficientemente buenos para enseñar el Evangelio de Jesucristo, la respuesta es: ¡Sí!
+
+No porque lo sepan todo.
+
+No porque tengan todas las habilidades de enseñanza.
+
+No porque siempre se sientan capaces o seguros.
+
+¡Sino porque pueden amar al Maestro de maestros!`,
+
+        `Y a medida que profundicen su amor por Aquel de quien enseñan, Él les enseñará, caminará a su lado y gradualmente los convertirá en los maestros que Él sabe que pueden llegar a ser.
+
+Ya sea que se vean como a un académico, un deportista, un discípulo de toda la vida o alguien que recientemente ha comenzado —o ha comenzado de nuevo— a seguir a Cristo, la invitación es la misma.`,
+
+        `Vengan al Maestro de maestros. Aprendan de Él. Ámenlo. Al hacerlo, Él les ayudará a amar a quienes enseñan y ese amor hará que la enseñanza de ustedes sea más semejante a la de Él.
+
+Para enseñar como el Salvador, ¡debemos amar como el Salvador!
+
+Esta es mi oración e invitación, en el nombre del Maestro de maestros, a quien amamos y quien nos amó primero, sí, Jesucristo. Amén.`
+      ];
+
+      if (discourseParts.length !== sections.length) {
+        throw new Error(`El discurso tiene ${discourseParts.length} fragmentos para ${sections.length} secciones.`);
+      }
+      sections.forEach((section, index) => { section.fullText = discourseParts[index]; });
+
+      const expandedScriptures = {
+        "Isaías 41:10": {
+          label: "Isaías 41:10, 13",
+          excerpt: `[10] No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te fortalezco; siempre te ayudaré; siempre te sustentaré con la diestra de mi justicia. [13] Porque yo, Jehová, soy tu Dios, quien te sostiene de la mano derecha y te dice: No temas, yo te ayudaré.`,
+          source: "Isaías 41:10, 13 · Antiguo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/ot/isa/41?lang=spa&id=p10,p13#p10"
+        },
+        "DyC 11:21": {
+          label: "DyC 11:21–22",
+          excerpt: `[21] No intentes declarar mi palabra, sino primero procura obtenerla, y entonces será desatada tu lengua; luego, si lo deseas, tendrás mi Espíritu y mi palabra, sí, el poder de Dios para convencer a los hombres. [22] Mas por ahora guarda silencio; estudia mi palabra que ha salido entre los hijos de los hombres, y también estudia mi palabra que saldrá entre ellos, o lo que ahora se está traduciendo, sí, hasta que hayas logrado todo cuanto concederé a los hijos de los hombres en esta generación, y entonces se añadirán a esto todas las cosas.`,
+          source: "Doctrina y Convenios 11:21–22",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/11?lang=spa&id=p21-p22#p21"
+        },
+        "Marcos 1:17": {
+          label: "Marcos 1:16–18",
+          excerpt: `[16] Y pasando junto al mar de Galilea, vio a Simón y a su hermano Andrés que echaban la red en el mar, porque eran pescadores. [17] Y les dijo Jesús: Venid en pos de mí, y haré que seáis pescadores de hombres. [18] Y al instante, dejando sus redes, le siguieron.`,
+          source: "Marcos 1:16–18 · Nuevo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/nt/mark/1?lang=spa&id=p16-p18#p16"
+        },
+        "Alma 17:11": {
+          label: "Alma 17:9–12",
+          excerpt: `[9] Y sucedió que viajaron muchos días por el desierto, y ayunaron y oraron mucho para que el Señor concediera que una porción de su Espíritu los acompañase y estuviese con ellos, a fin de que fuesen un instrumento en las manos de Dios para llevar a sus hermanos, los lamanitas, si posible fuese, al conocimiento de la verdad, al conocimiento de la depravación de las tradiciones de sus padres, las cuales no eran correctas. [10] Y sucedió que el Señor los visitó con su Espíritu, y les dijo: Sed consolados; y fueron consolados. [11] Y les dijo también el Señor: Id entre los lamanitas, vuestros hermanos, y estableced mi palabra; empero seréis pacientes en las congojas y aflicciones, para que les deis buenos ejemplos en mí; y os haré instrumentos en mis manos, para la salvación de muchas almas. [12] Y aconteció que se animaron los corazones de los hijos de Mosíah, así como los que estaban con ellos, para ir a los lamanitas a declararles la palabra de Dios.`,
+          source: "Alma 17:9–12 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/17?lang=spa&id=p9-p12#p9"
+        },
+        "Éter 12:27": {
+          label: "Éter 12:26–28",
+          excerpt: `[26] Y cuando hube dicho esto, el Señor me habló, diciendo: Los insensatos hacen burla, mas se lamentarán; y mi gracia es suficiente para los mansos, para que no saquen provecho de vuestra debilidad; [27] y si los hombres vienen a mí, les mostraré su debilidad. Doy a los hombres debilidad para que sean humildes; y basta mi gracia a todos los hombres que se humillan ante mí; porque si se humillan ante mí, y tienen fe en mí, entonces haré que las cosas débiles sean fuertes para ellos. [28] He aquí, mostraré a los gentiles su debilidad, y les mostraré que la fe, la esperanza y la caridad conducen a mí, la fuente de toda rectitud.`,
+          source: "Éter 12:26–28 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/ether/12?lang=spa&id=p26-p28#p26"
+        },
+        "DyC 42:14": {
+          label: "DyC 42:12–17",
+          excerpt: `[12] Y además, los élderes, presbíteros y maestros de esta iglesia enseñarán los principios de mi evangelio, que se encuentran en la Biblia y en el Libro de Mormón, en el cual se halla la plenitud del evangelio. [13] Y observarán los convenios y reglamentos de la iglesia para cumplirlos, y esto es lo que enseñarán, conforme el Espíritu los dirija. [14] Y se os dará el Espíritu por la oración de fe; y si no recibís el Espíritu, no enseñaréis. [15] Y todo esto procuraréis hacer como yo he mandado en cuanto a vuestras enseñanzas, hasta que se reciba la plenitud de mis Escrituras. [16] Y al elevar vuestras voces por medio del Consolador, hablaréis y profetizaréis conforme a lo que me parezca bien; [17] pues he aquí, el Consolador sabe todas las cosas, y da testimonio del Padre y del Hijo.`,
+          source: "Doctrina y Convenios 42:12–17",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/42?lang=spa&id=p12-p17#p12"
+        },
+        "DyC 84:88": {
+          label: "DyC 84:87–88",
+          excerpt: `[87] He aquí, os envío para reprobar al mundo por todos sus hechos inicuos, y para enseñarle acerca de un juicio que ha de venir. [88] Y quienes os reciban, allí estaré yo también, porque iré delante de vuestra faz. Estaré a vuestra diestra y a vuestra siniestra, y mi Espíritu estará en vuestro corazón, y mis ángeles alrededor de vosotros, para sosteneros.`,
+          source: "Doctrina y Convenios 84:87–88",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/84?lang=spa&id=p87-p88#p87"
+        },
+        "DyC 19:23": {
+          label: "DyC 19:23–24",
+          excerpt: `[23] Aprende de mí y escucha mis palabras; camina en la mansedumbre de mi Espíritu, y en mí tendrás paz. [24] Yo soy Jesucristo; vine por la voluntad del Padre, y su voluntad cumplo.`,
+          source: "Doctrina y Convenios 19:23–24",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/19?lang=spa&id=p23-p24#p23"
+        },
+        "Mosíah 27:25–26": {
+          label: "Mosíah 27:24–26",
+          excerpt: `[24] porque, dijo él, me he arrepentido de mis pecados, y el Señor me ha redimido; he aquí, he nacido del Espíritu. [25] Y el Señor me dijo: No te maravilles de que todo el género humano, sí, hombres y mujeres, toda nación, tribu, lengua y pueblo, deban nacer otra vez; sí, nacer de Dios, ser cambiados de su estado carnal y caído, a un estado de rectitud, siendo redimidos por Dios, convirtiéndose en sus hijos e hijas; [26] y así llegan a ser nuevas criaturas; y a menos que hagan esto, de ningún modo pueden heredar el reino de Dios.`,
+          source: "Mosíah 27:24–26 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/27?lang=spa&id=p24-p26#p24"
+        },
+        "Mateo 22:37–40": {
+          label: "Mateo 22:36–40",
+          excerpt: `[36] Maestro, ¿cuál es el gran mandamiento de la ley? [37] Y Jesús le dijo: Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma y con toda tu mente. [38] Este es el primero y grande mandamiento. [39] Y el segundo es semejante a este: Amarás a tu prójimo como a ti mismo. [40] De estos dos mandamientos dependen toda la ley y los profetas.`,
+          source: "Mateo 22:36–40 · Nuevo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/nt/matt/22?lang=spa&id=p36-p40#p36"
+        },
+        "Deuteronomio 6:6–7": {
+          label: "Deuteronomio 6:4–9",
+          excerpt: `[4] Escucha, oh Israel: Jehová nuestro Dios, Jehová uno es. [5] Y amarás a Jehová tu Dios con todo tu corazón, y con toda tu alma y con todas tus fuerzas. [6] Y estas palabras que yo te mando hoy estarán sobre tu corazón; [7] y se las repetirás a tus hijos y les hablarás de ellas estando en tu casa, y andando por el camino, y cuando te acuestes y cuando te levantes. [8] Y las atarás como una señal en tu mano, y estarán como frontales entre tus ojos; [9] y las escribirás en los postes de tu casa y en tus puertas.`,
+          source: "Deuteronomio 6:4–9 · Antiguo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/ot/deut/6?lang=spa&id=p4-p9#p4"
+        },
+        "Juan 13:34–35": {
+          excerpt: `[34] Un mandamiento nuevo os doy: Que os améis unos a otros; como yo os he amado, que también os améis los unos a los otros. [35] En esto conocerán todos que sois mis discípulos, si tenéis amor los unos por los otros.`,
+          source: "Juan 13:34–35 · Nuevo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/nt/john/13?lang=spa&id=p34-p35#p34"
+        },
+        "1 Juan 4:19": {
+          label: "1 Juan 4:16–21",
+          excerpt: `[16] Y nosotros hemos conocido y creído el amor que Dios tiene para con nosotros. Dios es amor; y el que permanece en amor, permanece en Dios, y Dios en él. [17] En esto se ha perfeccionado el amor en nosotros, para que tengamos confianza en el día del juicio, pues como él es, así somos nosotros en este mundo. [18] En el amor no hay temor, sino que el perfecto amor echa fuera el temor, porque el temor conlleva castigo, y el que teme, no se ha perfeccionado en el amor. [19] Nosotros le amamos a él, porque él nos amó primero. [20] Si alguno dice: Yo amo a Dios, pero aborrece a su hermano, es mentiroso. Porque el que no ama a su hermano a quien ha visto, ¿cómo puede amar a Dios a quien no ha visto? [21] Y nosotros tenemos este mandamiento de él: El que ama a Dios, ame también a su hermano.`,
+          source: "1 Juan 4:16–21 · Nuevo Testamento",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/nt/1-jn/4?lang=spa&id=p16-p21#p16"
+        },
+        "Moroni 7:48": {
+          label: "Moroni 7:45–48",
+          excerpt: `[45] Y la caridad es sufrida y es benigna, y no tiene envidia, ni se envanece, no busca lo suyo, no se irrita fácilmente, no piensa el mal, no se regocija en la iniquidad, sino se regocija en la verdad; todo lo sufre, todo lo cree, todo lo espera, todo lo soporta. [46] Por tanto, amados hermanos míos, si no tenéis caridad, no sois nada, porque la caridad nunca deja de ser. Allegaos, pues, a la caridad, que es mayor que todo, porque todas las cosas han de perecer; [47] pero la caridad es el amor puro de Cristo, y permanece para siempre; y a quien la posea en el postrer día, le irá bien. [48] Por consiguiente, amados hermanos míos, pedid al Padre con toda la energía de vuestros corazones, que seáis llenos de este amor que él ha otorgado a todos los que son discípulos verdaderos de su Hijo Jesucristo; para que lleguéis a ser hijos de Dios; para que cuando él aparezca, seamos semejantes a él, porque lo veremos tal como es; para que tengamos esta esperanza; para que seamos purificados así como él es puro. Amén.`,
+          source: "Moroni 7:45–48 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/moro/7?lang=spa&id=p45-p48#p45"
+        },
+        "3 Nefi 11:14–15": {
+          label: "3 Nefi 11:14–17",
+          excerpt: `[14] Levantaos y venid a mí, para que metáis vuestras manos en mi costado, y para que también palpéis las marcas de los clavos en mis manos y en mis pies, a fin de que sepáis que soy el Dios de Israel, y el Dios de toda la tierra, y que he sido muerto por los pecados del mundo. [15] Y aconteció que los de la multitud se adelantaron y metieron las manos en su costado, y palparon las marcas de los clavos en sus manos y en sus pies; y esto hicieron, yendo uno por uno, hasta que todos hubieron llegado; y vieron con los ojos y palparon con las manos, y supieron con certeza, y dieron testimonio de que era él, de quien habían escrito los profetas que había de venir. [16] Y cuando todos hubieron ido y comprobado por sí mismos, exclamaron a una voz, diciendo: [17] ¡Hosanna! ¡Bendito sea el nombre del Más Alto Dios! Y cayeron a los pies de Jesús, y lo adoraron.`,
+          source: "3 Nefi 11:14–17 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/11?lang=spa&id=p14-p17#p14"
+        },
+        "3 Nefi 17:6–9": {
+          label: "3 Nefi 17:5–10",
+          excerpt: `[5] Y sucedió que cuando Jesús hubo hablado así, de nuevo dirigió la vista alrededor hacia la multitud, y vio que estaban llorando, y lo miraban fijamente, como si le quisieran pedir que permaneciese un poco más con ellos. [6] Y les dijo: He aquí, mis entrañas rebosan de compasión por vosotros. [7] ¿Tenéis enfermos entre vosotros? Traedlos aquí. ¿Tenéis cojos, o ciegos, o lisiados, o mutilados, o leprosos, o atrofiados, o sordos, o quienes estén afligidos de manera alguna? Traedlos aquí y yo los sanaré, porque tengo compasión de vosotros; mis entrañas rebosan de misericordia. [8] Pues percibo que deseáis que os muestre lo que he hecho por vuestros hermanos en Jerusalén, porque veo que vuestra fe es suficiente para que yo os sane. [9] Y sucedió que cuando hubo hablado así, toda la multitud, de común acuerdo, se acercó, con sus enfermos, y sus afligidos, y sus cojos, y sus ciegos, y sus mudos, y todos los que padecían cualquier aflicción; y los sanaba a todos, según se los llevaban. [10] Y todos ellos, tanto los que habían sido sanados, como los que estaban sanos, se postraron a sus pies y lo adoraron; y cuantos, por la multitud pudieron acercarse, le besaron los pies, al grado de que le bañaron los pies con sus lágrimas.`,
+          source: "3 Nefi 17:5–10 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=spa&id=p5-p10#p5"
+        },
+        "3 Nefi 17:21": {
+          label: "3 Nefi 17:21–24",
+          excerpt: `[21] Y cuando hubo dicho estas palabras, lloró, y la multitud dio testimonio de ello; y tomó a sus niños pequeños, uno por uno, y los bendijo, y rogó al Padre por ellos. [22] Y cuando hubo hecho esto, lloró de nuevo; [23] y habló a la multitud, y les dijo: Mirad a vuestros pequeñitos. [24] Y he aquí, al levantar la vista para ver, dirigieron la mirada al cielo, y vieron abrirse los cielos, y vieron ángeles que descendían del cielo cual si fuera en medio de fuego; y bajaron y cercaron a aquellos pequeñitos, y fueron rodeados de fuego; y los ángeles les ministraron.`,
+          source: "3 Nefi 17:21–24 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=spa&id=p21-p24#p21"
+        },
+        "DyC 50:22": {
+          label: "DyC 50:17–24",
+          excerpt: `[17] De cierto os digo, el que es ordenado por mí y enviado a predicar la palabra de verdad por el Consolador, en el Espíritu de verdad, ¿la predica por el Espíritu de verdad o de alguna otra manera? [18] Y si es de alguna otra manera, no es de Dios. [19] Y además, el que recibe la palabra de verdad, ¿la recibe por el Espíritu de verdad o de alguna otra manera? [20] Si es de alguna otra manera, no es de Dios. [21] Por tanto, ¿cómo es que no podéis comprender y saber que el que recibe la palabra por el Espíritu de verdad, la recibe como la predica el Espíritu de verdad? [22] De manera que, el que la predica y el que la recibe se comprenden el uno al otro, y ambos son edificados y se regocijan juntamente. [23] Y lo que no edifica no es de Dios, y es tinieblas. [24] Lo que es de Dios es luz; y el que recibe luz y persevera en Dios, recibe más luz, y esa luz se hace más y más resplandeciente hasta el día perfecto.`,
+          source: "Doctrina y Convenios 50:17–24",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/50?lang=spa&id=p17-p24#p17"
+        },
+        "2 Nefi 25:26": {
+          label: "2 Nefi 25:23–26",
+          excerpt: `[23] Porque nosotros trabajamos diligentemente para escribir, a fin de persuadir a nuestros hijos, así como a nuestros hermanos, a creer en Cristo y a reconciliarse con Dios; pues sabemos que es por la gracia por la que nos salvamos, después de hacer cuanto podamos; [24] y a pesar de que creemos en Cristo, observamos la ley de Moisés, y esperamos anhelosamente y con firmeza en Cristo, hasta que la ley sea cumplida. [25] Pues para este fin se dio la ley; por tanto, para nosotros la ley ha muerto, y somos vivificados en Cristo a causa de nuestra fe; guardamos, empero, la ley, a causa de los mandamientos. [26] Y hablamos de Cristo, nos regocijamos en Cristo, predicamos de Cristo, profetizamos de Cristo y escribimos según nuestras profecías, para que nuestros hijos sepan a qué fuente han de acudir para la remisión de sus pecados.`,
+          source: "2 Nefi 25:23–26 · Libro de Mormón",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/bofm/2-ne/25?lang=spa&id=p23-p26#p23"
+        },
+        "DyC 84:85": {
+          label: "DyC 84:85–88",
+          excerpt: `[85] Ni os preocupéis tampoco de antemano por lo que habéis de decir; mas atesorad constantemente en vuestras mentes las palabras de vida, y os será dado en la hora precisa la porción que le será medida a cada hombre. [86] De modo que ninguno de vosotros —porque este mandamiento es para todos los fieles de la iglesia que son llamados de Dios al ministerio— lleve, desde esta hora, bolsa ni alforja al salir a proclamar este evangelio del reino. [87] He aquí, os envío para reprobar al mundo por todos sus hechos inicuos, y para enseñarle acerca de un juicio que ha de venir. [88] Y quienes os reciban, allí estaré yo también, porque iré delante de vuestra faz. Estaré a vuestra diestra y a vuestra siniestra, y mi Espíritu estará en vuestro corazón, y mis ángeles alrededor de vosotros, para sosteneros.`,
+          source: "Doctrina y Convenios 84:85–88",
+          url: "https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/84?lang=spa&id=p85-p88#p85"
+        }
+      };
+
+      sections.forEach((section) => {
+        section.refs.forEach((ref) => {
+          const expanded = expandedScriptures[ref.label];
+          if (expanded) Object.assign(ref, expanded);
+        });
+      });
+
+      const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#039;" })[char]);
+      const presentation = document.getElementById("presentation");
+      const controls = presentation.querySelector(".controls");
+
+      const markup = sections.map((section, index) => {
+        const image = section.image ? `<figure class="story-figure"><img src="${esc(section.image.url)}" alt="${esc(section.image.alt)}"><figcaption>${esc(section.image.caption)}</figcaption></figure>` : "";
+        const refs = section.refs.map((ref, refIndex) => `<button class="reference-button" type="button" data-reference data-section="${index}" data-ref="${refIndex}" aria-expanded="false" aria-controls="reference-modal">${esc(ref.label)}</button>`).join("");
+        return `<section class="slide story-slide" id="paso-${index + 1}" data-title="${esc(section.title)}" aria-hidden="true">
+          <div class="story-layout">
+            <div>
+              <p class="eyebrow">${esc(section.eyebrow)}</p>
+              <h2>${esc(section.title)}</h2>
+              <p class="story-lead">${esc(section.lead)}</p>
+              ${image}
+            </div>
+            <article class="discourse-card">
+              <button class="discourse-trigger" type="button" data-discourse data-section="${index}" aria-expanded="false" aria-controls="reference-modal">
+                <span class="discourse-label">En palabras del hermano Reid</span>
+                <span class="reid-quote">${esc(section.reid)}</span>
+                <span class="quote-attribution">Gabriel W. Reid · Conferencia General de octubre de 2026</span>
+                <span class="expand-hint"><span class="expand-symbol" aria-hidden="true"></span></span>
+              </button>
+              <p class="discussion">${esc(section.question)}</p>
+              <p class="support-label">Toca para profundizar</p>
+              <div class="reference-buttons">${refs}</div>
+            </article>
+          </div>
+        </section>`;
+      }).join("");
+      controls.insertAdjacentHTML("beforebegin", markup);
+
+      const slides = [...document.querySelectorAll(".slide")];
+      const previousButton = document.getElementById("previous");
+      const nextButton = document.getElementById("next");
+      const fullscreenButton = document.getElementById("fullscreen");
+      const counter = document.getElementById("counter");
+      const progress = document.getElementById("progress");
+      const modal = document.getElementById("reference-modal");
+      const modalPanel = modal.querySelector(".modal-panel");
+      const modalClose = document.getElementById("modal-close");
+      const modalKind = document.getElementById("modal-kind");
+      const modalTitle = document.getElementById("modal-title");
+      const modalExcerpt = document.getElementById("modal-excerpt");
+      const modalContext = document.getElementById("modal-context");
+      const modalSource = document.getElementById("modal-source");
+      const modalLink = document.getElementById("modal-link");
+      let current = 0;
+      let touchStartX = null;
+      let lastReferenceButton = null;
+
+      function showSlide(index) {
+        const nextIndex = Math.max(0, Math.min(index, slides.length - 1));
+        if (nextIndex === current) return;
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle("leaving-left", slideIndex < nextIndex);
+          slide.classList.toggle("active", slideIndex === nextIndex);
+          slide.setAttribute("aria-hidden", slideIndex === nextIndex ? "false" : "true");
+          if (slideIndex === nextIndex) slide.scrollTop = 0;
+        });
+        current = nextIndex;
+        updateControls();
+      }
+
+      function updateControls() {
+        previousButton.disabled = current === 0;
+        nextButton.disabled = current === slides.length - 1;
+        counter.textContent = `${current + 1} / ${slides.length}`;
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+        document.title = `${slides[current].dataset.title} — Ustedes son lo suficientemente buenos para enseñar`;
+        if (slides[current].id && history.replaceState) history.replaceState(null, "", `#${slides[current].id}`);
+      }
+
+      function openDiscourse(button) {
+        const sectionIndex = Number(button.dataset.section);
+        const section = sections[sectionIndex];
+        if (!section) return;
+        lastReferenceButton = button;
+        document.querySelectorAll("[aria-controls='reference-modal'][aria-expanded='true']").forEach((item) => item.setAttribute("aria-expanded", "false"));
+        button.setAttribute("aria-expanded", "true");
+        modalKind.textContent = `Discurso original · Parte ${sectionIndex + 1} de ${sections.length}`;
+        modalTitle.textContent = section.title;
+        modalExcerpt.textContent = section.fullText;
+        modalContext.textContent = `Esta es la parte ${sectionIndex + 1} de ${sections.length} del cuerpo completo del discurso, sin las notas al pie. Al leer las diecinueve partes en orden se lee todo el mensaje.`;
+        modalSource.textContent = "Gabriel W. Reid · “Ustedes son lo suficientemente buenos para enseñar” · Conferencia General de octubre de 2026";
+        modalLink.href = TALK;
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => modalPanel.focus());
+      }
+
+      function openReference(button) {
+        const section = sections[Number(button.dataset.section)];
+        const ref = section?.refs[Number(button.dataset.ref)];
+        if (!ref) return;
+        lastReferenceButton = button;
+        document.querySelectorAll("[aria-controls='reference-modal'][aria-expanded='true']").forEach((item) => item.setAttribute("aria-expanded", "false"));
+        button.setAttribute("aria-expanded", "true");
+        modalKind.textContent = ref.kind;
+        modalTitle.textContent = ref.title;
+        modalExcerpt.textContent = ref.excerpt;
+        modalContext.textContent = ref.context;
+        modalSource.textContent = ref.source;
+        modalLink.href = ref.url;
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => modalPanel.focus());
+      }
+
+      function closeReference() {
+        if (modal.hidden) return;
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+        if (lastReferenceButton) {
+          lastReferenceButton.setAttribute("aria-expanded", "false");
+          lastReferenceButton.focus();
+        }
+      }
+
+      const goNext = () => showSlide(current + 1);
+      const goPrevious = () => showSlide(current - 1);
+
+      async function toggleFullscreen() {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (error) {
+          console.warn("No se pudo cambiar el modo de pantalla completa.", error);
+        }
+      }
+
+      presentation.addEventListener("click", (event) => {
+        const discourseButton = event.target.closest("[data-discourse]");
+        if (discourseButton) { event.stopPropagation(); openDiscourse(discourseButton); return; }
+        const referenceButton = event.target.closest("[data-reference]");
+        if (referenceButton) { event.stopPropagation(); openReference(referenceButton); return; }
+        if (event.target.closest("button, a")) return;
+        goNext();
+      });
+      previousButton.addEventListener("click", goPrevious);
+      nextButton.addEventListener("click", goNext);
+      fullscreenButton.addEventListener("click", toggleFullscreen);
+      modalClose.addEventListener("click", closeReference);
+      modal.addEventListener("click", (event) => { if (event.target.matches("[data-close-modal]")) closeReference(); });
+
+      document.addEventListener("keydown", (event) => {
+        if (!modal.hidden) {
+          if (event.key === "Escape") { event.preventDefault(); closeReference(); }
+          if (event.key === "Tab") {
+            const focusable = [...modal.querySelectorAll("button, a[href], [tabindex]:not([tabindex='-1'])")];
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+          }
+          return;
+        }
+        if (["ArrowRight","PageDown"].includes(event.key) || (event.key === " " && !event.target.closest("button, a"))) { event.preventDefault(); goNext(); }
+        else if (["ArrowLeft","PageUp"].includes(event.key)) { event.preventDefault(); goPrevious(); }
+        else if (event.key === "Home") { event.preventDefault(); showSlide(0); }
+        else if (event.key === "End") { event.preventDefault(); showSlide(slides.length - 1); }
+        else if (event.key.toLowerCase() === "f") { event.preventDefault(); toggleFullscreen(); }
+      });
+
+      presentation.addEventListener("touchstart", (event) => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+      presentation.addEventListener("touchend", (event) => {
+        if (touchStartX === null || !modal.hidden) return;
+        const distance = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(distance) > 55) distance < 0 ? goNext() : goPrevious();
+        touchStartX = null;
+      }, { passive: true });
+
+      document.addEventListener("fullscreenchange", () => {
+        const active = Boolean(document.fullscreenElement);
+        fullscreenButton.setAttribute("aria-label", active ? "Salir de pantalla completa" : "Entrar en pantalla completa");
+        fullscreenButton.title = active ? "Salir de pantalla completa (F)" : "Pantalla completa (F)";
+      });
+
+      const initialIndex = slides.findIndex((slide) => slide.id === location.hash.slice(1));
+      if (initialIndex > 0) showSlide(initialIndex);
+      else updateControls();
+    })();
+  </script>
+</body>
+</html>
