@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#006184">
+  <title>Pondré un espíritu nuevo dentro de vosotros</title>
+  <style>
+    :root{
+      --church-blue:#006184;
+      --church-blue-deep:#003f52;
+      --church-blue-soft:#dceef2;
+      --ink:#24282a;
+      --muted:#5f686c;
+      --paper:#f6f5f1;
+      --white:#fff;
+      --line:rgba(0,97,132,.18);
+      --line-strong:rgba(0,97,132,.34);
+      --shadow:0 22px 60px rgba(23,48,57,.13);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{width:100%;min-height:100%;margin:0}
+    body{overflow-x:hidden;background:#e9eeef;color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,a{font:inherit}
+    button{color:inherit}
+    [hidden]{display:none!important}
+    .presentation{position:relative;width:100%;min-height:100%;overflow:visible;background:var(--paper);isolation:isolate;touch-action:pan-y}
+    .slide{position:relative;display:grid;width:100%;min-height:100vh;min-height:100dvh;overflow:visible;scroll-margin-top:0;border-bottom:1px solid var(--line);opacity:1;visibility:visible;transform:none;pointer-events:auto}
+    .slide.active{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+    h1,h2,h3,blockquote{font-family:Georgia,"Times New Roman",serif;font-weight:400}
+    .eyebrow{display:flex;align-items:center;gap:.8rem;margin:0;color:var(--church-blue);font-size:clamp(.69rem,1vw,.88rem);font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    .eyebrow::before{width:2.6rem;height:2px;content:"";flex:0 0 auto;background:var(--church-blue)}
+    .title-slide{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(18rem,.92fr);align-items:center;gap:clamp(2rem,7vw,8rem);padding:clamp(2rem,5vw,5.2rem) clamp(2rem,7vw,7.5rem) clamp(6.3rem,11vh,8rem);background:radial-gradient(circle at 84% 18%,rgba(0,97,132,.12),transparent 24%),linear-gradient(115deg,var(--white) 0 67%,#edf5f6 67% 100%)}
+    .title-copy{position:relative;z-index:2}
+    .title-slide h1{max-width:11ch;margin:clamp(1.4rem,3vw,2.6rem) 0 1.8rem;font-size:clamp(3.15rem,6.6vw,6.65rem);line-height:.96;letter-spacing:-.045em}
+    .title-slide h1 em{color:var(--church-blue);font-style:normal}
+    .title-subtitle{max-width:40rem;margin:0;color:var(--muted);font-size:clamp(1rem,1.5vw,1.3rem);line-height:1.55}
+    .title-subtitle strong{display:block;margin-bottom:.3rem;color:var(--ink);font-weight:700}
+    .visual-mark{position:relative;display:grid;min-height:min(62vh,39rem);place-items:center}
+    .halo{position:absolute;width:min(31vw,29rem);aspect-ratio:1;border:1px solid rgba(0,97,132,.16);border-radius:50%}
+    .halo::before,.halo::after{position:absolute;inset:12%;content:"";border:1px solid rgba(0,97,132,.2);border-radius:50%}
+    .halo::after{inset:25%;background:rgba(255,255,255,.56)}
+    .cover-art{position:relative;z-index:2;width:min(29vw,25rem);margin:0}
+    .cover-frame{display:grid;aspect-ratio:5/6;place-items:center;overflow:hidden;border:10px solid rgba(255,255,255,.92);border-radius:.42rem;background:linear-gradient(150deg,#f9fcfc,#dceef2);box-shadow:0 26px 65px rgba(23,48,57,.2)}
+    .cover-frame svg{width:100%;height:100%}
+    .cover-art figcaption{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem;color:var(--muted);font-size:clamp(.72rem,1vw,.88rem)}
+    .cover-art figcaption strong{color:var(--ink)}
+    .source-line{position:absolute;right:clamp(2rem,7vw,7.5rem);bottom:clamp(5.5rem,9vh,7rem);left:clamp(2rem,7vw,7.5rem);display:flex;justify-content:space-between;gap:1rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--muted);font-size:clamp(.72rem,1vw,.88rem)}
+    .story-slide{display:grid;align-items:center;padding:clamp(2rem,4vw,4.2rem) clamp(2rem,6vw,6.5rem) clamp(6.4rem,10vh,7.5rem);background:radial-gradient(circle at 92% 9%,rgba(0,97,132,.1),transparent 24%),linear-gradient(90deg,rgba(0,97,132,.04) 1px,transparent 1px),linear-gradient(rgba(0,97,132,.04) 1px,transparent 1px),var(--paper);background-size:auto,5rem 5rem,5rem 5rem,auto}
+    .story-layout{display:grid;grid-template-columns:minmax(0,.92fr) minmax(24rem,1.08fr);align-items:center;gap:clamp(2rem,5vw,5.5rem);width:min(86rem,100%);margin:auto}
+    .story-copy{min-width:0}
+    .topic-order{display:inline-flex;margin:.9rem 0 0;padding:.4rem .62rem;border:1px solid var(--line);border-radius:.3rem;background:rgba(255,255,255,.72);color:var(--church-blue-deep);font-size:.69rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+    .story-slide h2{max-width:14ch;margin:1rem 0 1rem;font-size:clamp(2.4rem,4.8vw,5rem);line-height:1.01;letter-spacing:-.04em}
+    .story-lead{max-width:42rem;margin:0;color:var(--muted);font-size:clamp(1rem,1.4vw,1.2rem);line-height:1.58}
+    .frame-note{max-width:40rem;margin:.45rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.45}
+    .name-card{margin-top:1rem;padding:1rem 1.1rem;border:1px solid var(--line-strong);border-radius:.45rem;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(23,48,57,.07)}
+    .name-card strong{display:block;margin-bottom:.38rem;color:var(--church-blue);font:400 clamp(1.08rem,1.7vw,1.42rem)/1.25 Georgia,serif}
+    .name-card p{margin:.35rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.5}
+    .name-card a{color:var(--church-blue-deep)}
+    .story-question{margin:1.15rem 0 0;padding:1rem 1.05rem;border-left:5px solid var(--church-blue);border-radius:0 .35rem .35rem 0;background:#eef7f8;color:var(--ink);font:400 clamp(1.08rem,1.7vw,1.36rem)/1.42 Georgia,serif}
+    .source-card{padding:clamp(1rem,2vw,1.45rem);border:1px solid var(--line);border-radius:.52rem;background:rgba(255,255,255,.92);box-shadow:var(--shadow)}
+    .reading{margin-top:.65rem;border:1px solid var(--line);border-radius:.42rem;background:var(--white);overflow:hidden}
+    .reading:first-of-type{margin-top:0}
+    .reading[open]{border-color:var(--line-strong);box-shadow:0 9px 25px rgba(23,48,57,.08)}
+    .reading summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;padding:.78rem .88rem;cursor:pointer;list-style:none}
+    .reading summary::-webkit-details-marker{display:none}
+    .reading summary:hover{background:#f2f8f9}
+    .reading-summary{display:grid;min-width:0;gap:.16rem}
+    .reading-summary strong{color:var(--church-blue-deep);font-size:.79rem;line-height:1.25}
+    .reading-summary small{overflow:hidden;color:var(--muted);font-size:.68rem;line-height:1.3;text-overflow:ellipsis;white-space:nowrap}
+    .reading-plus{display:grid;width:1.45rem;height:1.45rem;place-items:center;border-radius:50%;background:var(--church-blue-soft);color:var(--church-blue);font-size:1rem;line-height:1}
+    .reading-plus::before{content:"+"}
+    .reading[open] .reading-plus::before{content:"−"}
+    .reading-body{max-height:min(46vh,28rem);padding:1rem 1.05rem 1.15rem;overflow:auto;overscroll-behavior:contain;border-top:1px solid var(--line);scrollbar-width:thin;scrollbar-color:rgba(0,97,132,.35) transparent}
+    .reading-body h4{margin:0 0 .75rem;color:var(--church-blue-deep);font:400 clamp(1.08rem,1.7vw,1.4rem)/1.25 Georgia,serif}
+    .reading-body blockquote{margin:0;padding-left:1rem;border-left:4px solid var(--church-blue);font-size:clamp(.96rem,1.4vw,1.12rem);line-height:1.56;white-space:pre-line}
+    .reading-context{margin:1rem 0 .7rem;color:var(--muted);font-size:.8rem;line-height:1.52}
+    .reading-source{margin:0 0 .85rem;color:var(--ink);font-size:.72rem;line-height:1.45}
+    .official-link{display:inline-flex;align-items:center;gap:.4rem;padding:.62rem .82rem;border-radius:.34rem;background:var(--church-blue);color:var(--white);font-size:.75rem;font-weight:780;text-decoration:none}
+    .official-link:hover{background:var(--church-blue-deep)}
+    .official-link::after{content:"↗"}
+    .doctrine-note{margin-top:.7rem;padding:.78rem .9rem;border:1px solid var(--line-strong);border-radius:.4rem;background:#eef7f8;color:var(--church-blue-deep);font-size:.76rem;line-height:1.5}
+    .doctrine-note strong{display:block;margin-bottom:.18rem}
+    .doctrine-note a{color:var(--church-blue-deep);font-weight:750}
+    .controls{position:fixed;z-index:30;right:50%;bottom:clamp(1rem,2.5vh,1.8rem);display:flex;align-items:center;gap:.25rem;padding:.4rem;border:1px solid rgba(0,63,82,.14);border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 10px 28px rgba(23,48,57,.13);backdrop-filter:blur(14px);transform:translateX(50%)}
+    .control-button{display:grid;width:2.6rem;height:2.6rem;padding:0;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--church-blue-deep);cursor:pointer;transition:background 160ms ease,color 160ms ease,transform 160ms ease}
+    .control-button:hover{background:var(--church-blue-soft);color:var(--church-blue)}
+    .control-button:active{transform:scale(.92)}
+    .control-button:disabled{opacity:.28;cursor:default}
+    .control-button:disabled:hover{background:transparent}
+    .control-button svg{width:1.12rem;height:1.12rem;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
+    .counter{min-width:3.8rem;color:var(--muted);font-size:.76rem;font-variant-numeric:tabular-nums;text-align:center}
+    .progress{position:fixed;z-index:40;top:0;left:0;width:0;height:4px;background:var(--church-blue);transition:width 300ms ease}
+    .hint{position:fixed;z-index:20;right:clamp(1rem,2vw,2rem);bottom:clamp(1.3rem,3vh,2rem);margin:0;color:var(--muted);font-size:.72rem}
+    :focus-visible{outline:3px solid rgba(0,97,132,.34);outline-offset:3px}
+    @media(max-width:980px){.story-layout{grid-template-columns:minmax(0,.86fr) minmax(22rem,1.14fr);gap:2rem}.story-slide h2{font-size:clamp(2.2rem,4.7vw,4rem)}}
+    @media(max-width:760px){.title-slide{grid-template-columns:1fr;align-content:center;padding:2rem 1.3rem 6.2rem}.visual-mark{display:none}.title-slide h1{font-size:clamp(2.75rem,12.5vw,4.8rem)}.source-line{right:1.3rem;bottom:5.7rem;left:1.3rem}.source-line span:last-child{display:none}.story-slide{align-items:start;padding:2rem 1rem 6.8rem}.story-layout{grid-template-columns:1fr;gap:1.35rem}.story-slide h2{font-size:clamp(2.2rem,10vw,3.8rem)}.source-card{padding:1rem}.hint{display:none}.controls{max-width:calc(100vw - 1rem)}.reading-body{max-height:55vh}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="presentation" id="presentation" aria-label="Presentación: Pondré un espíritu nuevo dentro de vosotros">
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <section class="slide title-slide active" id="portada" data-title="Portada" aria-hidden="false">
+      <div class="title-copy">
+        <p class="eyebrow">Escuela Dominical · Ven, sígueme</p>
+        <h1>“Pondré un <em>espíritu nuevo</em> dentro de vosotros”</h1>
+        <p class="title-subtitle"><strong>Ezequiel 1–3; 33–34; 36–37; 47</strong>2–8 noviembre · Antiguo Testamento 2026</p>
+      </div>
+      <div class="visual-mark">
+        <div class="halo" aria-hidden="true"></div>
+        <figure class="cover-art">
+          <div class="cover-frame">
+            <svg viewBox="0 0 420 500" role="img" aria-label="Un río de vida nace del templo y llega a árboles nuevos">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dceef2"/></linearGradient>
+                <linearGradient id="river" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9bcbd3"/><stop offset="1" stop-color="#006184"/></linearGradient>
+              </defs>
+              <rect width="420" height="500" fill="url(#sky)"/>
+              <circle cx="326" cy="85" r="46" fill="#fff" stroke="#006184" stroke-opacity=".16" stroke-width="2"/>
+              <path d="M104 205h212v94H104z" fill="#f9fcfc" stroke="#006184" stroke-width="4"/>
+              <path d="M82 205l128-91 128 91" fill="none" stroke="#003f52" stroke-width="8" stroke-linejoin="round"/>
+              <path d="M149 205v-48h122v48M184 299v-57h52v57" fill="none" stroke="#006184" stroke-width="5"/>
+              <path d="M210 299c-8 58-52 88-71 201h151c-37-104-72-148-80-201z" fill="url(#river)" opacity=".9"/>
+              <path d="M58 382c18-43 38-62 61-69M362 382c-18-43-38-62-61-69" fill="none" stroke="#006184" stroke-width="7" stroke-linecap="round"/>
+              <path d="M116 327c-35-1-52-21-54-48 34-3 55 17 54 48zM304 327c35-1 52-21 54-48-34-3-55 17-54 48z" fill="#78aeb7"/>
+              <path d="M90 401c-28-1-42-17-44-39 27-2 44 14 44 39zM330 401c28-1 42-17 44-39-27-2-44 14-44 39z" fill="#95bec5"/>
+            </svg>
+          </div>
+          <figcaption><strong>Agua viva desde la Casa del Señor</strong><span>Ezequiel 47</span></figcaption>
+        </figure>
+      </div>
+      <div class="source-line"><span>Clase basada solo en fuentes oficiales de la Iglesia</span><span>21 diapositivas · 40 citas sin repetir</span></div>
+    </section>
+    <nav class="controls" aria-label="Controles de la presentación">
+      <button class="control-button" id="previous" type="button" aria-label="Diapositiva anterior" title="Anterior (flecha izquierda)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <span class="counter" id="counter" aria-live="polite">1 / 21</span>
+      <button class="control-button" id="next" type="button" aria-label="Siguiente diapositiva" title="Siguiente (flecha derecha)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="control-button" id="fullscreen" type="button" aria-label="Entrar en pantalla completa" title="Pantalla completa (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+    </nav>
+    <p class="hint">Dos dedos para mover · ← → cambiar tema · F pantalla completa</p>
+  </main>
+  <script>
+    (()=>{
+      const URLS={
+        lesson:"https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026/45?lang=spa",
+        ezekielManual26:"https://www.churchofjesuschrist.org/study/manual/old-testament-student-manual-kings-malachi/chapter-26?lang=spa",
+        ezekielManual27:"https://www.churchofjesuschrist.org/study/manual/old-testament-student-manual-kings-malachi/chapter-27?lang=spa",
+        warning:"https://www.churchofjesuschrist.org/study/general-conference/2017/04/the-voice-of-warning?lang=spa",
+        decisions:"https://www.churchofjesuschrist.org/study/broadcasts/worldwide-devotional-for-young-adults/2022/05/12nelson?lang=spa",
+        matter:"https://www.churchofjesuschrist.org/study/general-conference/2011/10/you-matter-to-him?lang=spa",
+        lift:"https://www.churchofjesuschrist.org/study/general-conference/2008/10/lift-where-you-stand?lang=spa",
+        favored:"https://www.churchofjesuschrist.org/study/general-conference/2020/10/53stevenson?lang=spa",
+        prevail:"https://www.churchofjesuschrist.org/study/general-conference/2020/10/46nelson?lang=spa",
+        repent:"https://www.churchofjesuschrist.org/study/general-conference/2019/04/36nelson?lang=spa",
+        people:"https://www.churchofjesuschrist.org/study/general-conference/2018/04/it-is-all-about-people?lang=spa",
+        strengthen:"https://www.churchofjesuschrist.org/study/general-conference/2018/04/be-with-and-strengthen-them?lang=spa",
+        genuine:"https://www.churchofjesuschrist.org/study/general-conference/2015/04/on-being-genuine?lang=spa",
+        unimaginable:"https://www.churchofjesuschrist.org/study/general-conference/2020/10/28uchtdorf?lang=spa",
+        broken:"https://www.churchofjesuschrist.org/study/general-conference/2022/04/42wright?lang=spa",
+        vessel:"https://www.churchofjesuschrist.org/study/general-conference/2013/10/like-a-broken-vessel?lang=spa",
+        healing:"https://www.churchofjesuschrist.org/study/general-conference/2018/04/family-history-and-temple-work-sealing-and-healing?lang=spa",
+        christ:"https://www.churchofjesuschrist.org/study/general-conference/2023/04/58nelson?lang=spa"
+      };
+      const scripture=(label,title,excerpt,context,source,url)=>({kind:"Escritura",label,title,excerpt,context,source,url});
+      const quote=(label,title,excerpt,context,source,url)=>({kind:"Cita moderna",label,title,excerpt,context,source,url});
+      const parts=[
+        {
+          id:"parte-1",
+          eyebrow:"Parte 1 de 3 · Cautiverio y llamamiento",
+          title:"Dios todavía tenía una obra eterna para Ezequiel",
+          lead:"El cautiverio cambió la vida terrenal de Ezequiel. No cambió su valor ni la obra que Dios podía hacer mediante él.",
+          nameTitle:"Ezequiel: “Dios es fuerte” o “Dios fortalecerá”",
+          nameText:"Ezequiel era sacerdote de la familia de Sadoc. Fue llevado cautivo a los 25 años y llamado profeta a los 30. Lejos del templo, Dios abrió los cielos y lo llamó a servir.",
+          nameLinks:[
+            {label:"Atalaya para Israel",url:URLS.ezekielManual26},
+            {label:"La voz de amonestación",url:URLS.warning}
+          ],
+          lensNote:"El lugar y el título cambiaron. El valor y la obra de Dios siguieron.",
+          topics:[
+            {
+              title:"Ezequiel era sacerdote entre cautivos",
+              text:"Jeremías sirvió en Jerusalén, Daniel en la corte y Ezequiel entre los exiliados. Dios no dejó a los cautivos sin profetas.",
+              question:"¿Qué parte de tu valor permanece cuando cambia tu función?",
+              refs:[scripture("Ezequiel 1:1–3","Los cielos se abrieron entre los cautivos",`[1] Y aconteció en el año treinta, en el mes cuarto, a los cinco días del mes, que, estando yo en medio de los cautivos, junto al río Quebar, los cielos se abrieron y vi visiones de Dios.
+[2] A los cinco días del mes, en el quinto año del cautiverio del rey Joaquín,
+[3] vino directamente la palabra de Jehová al sacerdote Ezequiel hijo de Buzi, en la tierra de los caldeos, junto al río Quebar; y vino allí sobre él la mano de Jehová.`,"El relato nombra a Ezequiel como sacerdote. Su llamamiento llegó en tierra de cautiverio.","Ezequiel 1:1–3 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/1?lang=spa&id=p1-p3#p1")]
+            },
+            {
+              title:"Los cielos se abrieron lejos de Jerusalén",
+              text:"La gloria de Jehová llegó hasta Babilonia. La distancia del templo no dejó a Ezequiel fuera del alcance de la revelación.",
+              question:"¿Dónde necesitas recordar que Dios todavía puede hablarte?",
+              refs:[scripture("Ezequiel 1:26–28","La gloria de Jehová junto al río Quebar",`[26] Y sobre el firmamento que estaba sobre sus cabezas se veía la figura de un trono que parecía de piedra de zafiro; y en lo más alto, sobre la figura del trono, había algo a semejanza de un hombre sentado sobre él.
+[27] Y vi algo que tenía la apariencia de ámbar, como la apariencia del fuego dentro de ella alrededor, desde el aspecto de sus lomos hacia arriba; y desde sus lomos hacia abajo, vi que parecía como fuego y que tenía un resplandor alrededor.
+[28] Como el aspecto del arco iris que está en las nubes en día de lluvia, así era el aspecto del resplandor alrededor. Esta fue la visión de la semejanza de la gloria de Jehová. Y cuando yo la vi, me postré sobre mi rostro y oí la voz de uno que hablaba.`,"Jehová mostró Su gloria fuera de Jerusalén. El exilio no cerró los cielos.","Ezequiel 1:26–28 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/1?lang=spa&id=p26-p28#p26")]
+            },
+            {
+              title:"El Espíritu lo puso sobre sus pies",
+              text:"Ezequiel no se levantó solo. El Espíritu entró en él, lo afirmó y le permitió oír la voz del Señor.",
+              question:"¿Qué obra requiere que el Espíritu te ponga de pie?",
+              refs:[scripture("Ezequiel 2:1–7","El Espíritu entró en mí",`[1] Y me dijo: Hijo de hombre, ponte sobre tus pies, y hablaré contigo.
+[2] Y cuando me habló, entró el espíritu en mí y me puso sobre mis pies, y oí al que me hablaba.
+[3] Y me dijo: Hijo de hombre, yo te envío a los hijos de Israel, a una nación de rebeldes que se rebelaron contra mí; ellos y sus padres se han rebelado contra mí hasta este mismo día.
+[4] Yo, pues, te envío a hijos de duro rostro y de empedernido corazón, y les dirás: Así ha dicho Jehová el Señor.
+[5] Acaso ellos escuchen; y si no escuchan (porque son una casa rebelde), sabrán que hubo un profeta entre ellos.
+[6] Y tú, hijo de hombre, no temas; no tengas miedo ni de ellos ni de sus palabras, aunque te hallas entre zarzas y espinos y moras con escorpiones; no tengas miedo de sus palabras ni temas delante de ellos, porque son una casa rebelde.
+[7] Les hablarás, pues, mis palabras, ya sea que escuchen o dejen de escuchar, porque son muy rebeldes.`,"El llamamiento vino con poder para levantarse, escuchar y hablar sin temor.","Ezequiel 2:1–7 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/2?lang=spa&id=p1-p7#p1")]
+            },
+            {
+              title:"Dios fortaleció lo que Ezequiel necesitaba",
+              text:"El Señor no quitó la dureza de la misión. Dio a Ezequiel firmeza para recibir Su palabra y permanecer entre el pueblo.",
+              question:"¿Qué podría fortalecer Dios sin quitar tu dificultad?",
+              refs:[scripture("Ezequiel 3:8–15","La mano de Jehová era fuerte sobre mí",`[8] He aquí, yo he hecho tu rostro duro contra los rostros de ellos, y tu frente dura contra sus frentes.
+[9] Como el diamante, más duro que el pedernal, he hecho tu frente; no los temas ni tengas miedo delante de ellos, porque son una casa rebelde.
+[10] Y me dijo: Hijo de hombre, toma en tu corazón todas mis palabras que yo te hablaré y oye con tus oídos.
+[11] Y ve, acércate a los cautivos, a los hijos de tu pueblo, y háblales y diles: Así ha dicho Jehová el Señor, ya sea que escuchen o dejen de escuchar.
+[12] Y el espíritu me levantó, y oí detrás de mí una voz de gran estruendo, que decía: Bendita sea la gloria de Jehová desde su lugar.
+[13] Oí también el ruido de las alas de los seres vivientes que se tocaban la una con la otra, y el ruido de las ruedas delante de ellos y el ruido de gran estruendo.
+[14] Y el espíritu me levantó y me llevó; y fui en amargura, en la indignación de mi espíritu, mas la mano de Jehová era fuerte sobre mí.
+[15] Y vine a los cautivos en Tel-abib, que moraban junto al río Quebar, y me senté donde ellos estaban sentados, y allí permanecí siete días, atónito, entre ellos.`,"La fuerza de Dios permitió que Ezequiel hiciera una obra difícil y compartiera el dolor de los cautivos.","Ezequiel 3:8–15 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/3?lang=spa&id=p8-p15#p8")]
+            },
+            {
+              title:"Su obra continuaría en la eternidad",
+              text:"Doctrina y Convenios nombra a Ezequiel entre los profetas fieles. Ellos seguirían trabajando después de esta vida.",
+              question:"¿Qué cambia al ver tu servicio desde la eternidad?",
+              refs:[scripture("DyC 138:43, 51–52","Ezequiel continuaría sus labores",`[43] Además, Ezequiel, a quien se mostró en una visión el gran valle de huesos secos, que iban a ser revestidos de carne, para levantarse otra vez como almas vivientes en la resurrección de los muertos;
+
+[51] A estos el Señor instruyó, y les dio poder para levantarse, después que él resucitara de los muertos, y entrar en el reino de su Padre, y ser coronados allí con inmortalidad y vida eterna,
+[52] y en adelante continuar sus labores como el Señor lo había prometido, y ser partícipes de todas las bendiciones que estaban reservadas para aquellos que lo aman.`,"La revelación nombra a Ezequiel y enseña que el servicio fiel continúa después de la muerte.","Doctrina y Convenios 138:43, 51–52","https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/138?lang=spa&id=p43,p51-p52#p43")]
+            }
+          ],
+          supports:[
+            scripture("Mosíah 5:7–9","El nombre que ofrece liberación",`[7] Ahora pues, a causa del convenio que habéis hecho, seréis llamados progenie de Cristo, hijos e hijas de él, porque he aquí, hoy él os ha engendrado espiritualmente; pues decís que vuestros corazones han cambiado por medio de la fe en su nombre; por tanto, habéis nacido de él y habéis llegado a ser sus hijos y sus hijas.
+[8] Y bajo este título sois librados, y no hay otro título por medio del cual podáis ser librados. No hay otro nombre dado por el cual venga la salvación; por tanto, quisiera que tomaseis sobre vosotros el nombre de Cristo, todos vosotros que habéis hecho convenio con Dios de ser obedientes hasta el fin de vuestras vidas.
+[9] Y sucederá que quien hiciere esto, se hallará a la diestra de Dios, porque sabrá el nombre por el cual es llamado; pues será llamado por el nombre de Cristo.`,"Nuestro título eterno es progenie de Cristo. Ningún título terrenal puede ofrecer esa liberación.","Mosíah 5:7–9 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/5?lang=spa&id=p7-p9#p7")
+          ],
+          quotes:[
+            quote("Presidente Nelson · mayo 2022","Los nombres que perduran",`Las etiquetas pueden ser divertidas e indicar su apoyo a muchas cosas positivas. Muchas de esas etiquetas cambiarán para ustedes con el paso del tiempo; y no todas las etiquetas tienen el mismo valor. Pero si alguna de ellas reemplaza a aquello que los define de una manera más importante, los resultados pueden asfixiarlos espiritualmente.
+
+Apliquemos ahora esta pregunta a ustedes. ¿Quiénes son ustedes?
+
+Primero y más importante, son hijos de Dios. Segundo, como miembros de la Iglesia, son hijos del convenio; y tercero, son discípulos de Jesucristo.`,"Estos nombres eternos superan profesión, cargo y éxito visible.","Russell M. Nelson · “Decisiones para la eternidad” · Mayo de 2022",URLS.decisions),
+            quote("Presidente Uchtdorf · 2011","No son invisibles para Dios",`Tercero, no importa dónde vivan, no importan sus humildes circunstancias, cuán precario sea su empleo, cuán limitadas sean sus habilidades, cuán común sea su apariencia o cuán pequeño parezca ser su llamamiento en la Iglesia, ustedes no son invisibles para su Padre Celestial. Él los ama. Él conoce su humilde corazón y sus actos de amor y bondad. Juntos, forman un perdurable testimonio de su fidelidad y de su fe.`,"Dios ve a Sus hijos aun cuando su lugar o su función parezcan pequeños.","Dieter F. Uchtdorf · “Ustedes son importantes para Él” · Octubre de 2011",URLS.matter),
+            quote("Presidente Uchtdorf · 2008","El Señor valora al siervo",`Hermanos, cuando comparezcamos ante el Señor para ser juzgados, ¿considerará Él las posiciones que hayamos ocupado en el mundo o incluso en la Iglesia? ¿Consideran que los títulos que hayamos poseído, salvo los de “esposo”, “padre” o “poseedor del sacerdocio”, significarán mucho para Él? ¿Piensan que le interesará cuán llena haya estado nuestra agenda o a cuántas reuniones importantes hayamos asistido?
+
+El Señor juzga de un modo muy diferente del que lo hacemos nosotros. Él se complace con el noble siervo, y no con el “noble” que es siervo de sí mismo.`,"Dios mide el servicio fiel, no el prestigio de una función.","Dieter F. Uchtdorf · “Impulsen desde donde estén” · Octubre de 2008",URLS.lift),
+            quote("Élder Stevenson · 2020","Lo que podían hacer con el Señor",`Juntos analizamos los ejemplos de personas del Nuevo Testamento, del Libro de Mormón y de Doctrina y Convenios, a quienes el Señor bendijo para que alcanzaran la grandeza durante la adversidad. Todos se definieron más por lo que eran capaces de hacer con la ayuda del Señor que por lo que no podían hacer durante sus momentos de confinamiento y restricciones.
+
+Leímos sobre Pablo y Silas, quienes, mientras se hallaban encarcelados en cepos, oraron, cantaron, enseñaron, testificaron e incluso bautizaron al carcelero.`,"La ayuda del Señor puede definirnos más que nuestras limitaciones.","Gary E. Stevenson · “Altamente favorecidos del Señor” · Octubre de 2020",URLS.favored),
+            quote("Presidente Nelson · 2020","La obra más importante del mundo",`Durante siglos, los profetas han predicho este recogimiento, ¡y se está llevando a cabo ahora mismo! Como preludio esencial de la segunda venida del Señor, ¡es la obra más importante del mundo!
+
+Este recogimiento, antes del milenio, es una saga individual de un incremento de fe y valentía espiritual para millones de personas. Y como miembros de La Iglesia de Jesucristo de los Santos de los Últimos Días, o el “Israel del convenio de los últimos días”, se nos ha encomendado ayudar al Señor en esta obra trascendental.`,"El llamamiento actual participa en el recogimiento antes de la Segunda Venida.","Russell M. Nelson · “Que Dios prevalezca” · Octubre de 2020",URLS.prevail)
+          ]
+        },
+        {
+          id:"parte-2",
+          eyebrow:"Parte 2 de 3 · Amonestación y arrepentimiento",
+          title:"Dios amonesta porque desea que Su pueblo viva",
+          lead:"La amonestación no significa que Dios dejó de amar a Israel. Jehová advierte porque quiere salvar, sanar y hacer volver.",
+          lensNote:"Son advertencias para todo Israel, no un mapa de cada pecado local.",
+          topics:[
+            {
+              title:"El atalaya debe tocar la trompeta",
+              text:"El atalaya escucha primero la palabra de Dios. Después advierte con claridad y deja que cada persona escoja.",
+              question:"¿Cómo podemos hablar con claridad y conservar el amor?",
+              refs:[
+                scripture("Ezequiel 3:16–21","Te he puesto por atalaya",`[16] Y aconteció que al cabo de los siete días vino a mí la palabra de Jehová, diciendo:
+[17] Hijo de hombre, yo te he puesto por atalaya a la casa de Israel; oirás, pues, tú la palabra de mi boca y los amonestarás de mi parte.
+[18] Cuando yo diga al malvado: De cierto morirás, y tú no lo amonestas ni le hablas, para que el malvado sea advertido de su mal camino a fin de que viva, el malvado morirá en su iniquidad, mas su sangre demandaré de tu mano.
+[19] Pero si tú amonestas al malvado, y él no se convierte de su maldad ni de su mal camino, él morirá en su iniquidad, pero tú habrás librado tu alma.
+[20] Y si el justo se aparta de su justicia y comete iniquidad, y yo pongo tropiezo delante de él, él morirá, porque tú no lo amonestaste, en su pecado morirá, y sus justicias que había hecho no serán recordadas; mas su sangre demandaré de tu mano.
+[21] Pero si amonestas al justo para que no peque, y no peca, ciertamente vivirá, porque fue amonestado; y tú habrás librado tu alma.`,"El deber del atalaya es oír a Dios y advertir. No controla la respuesta.","Ezequiel 3:16–21 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/3?lang=spa&id=p16-p21#p16"),
+                scripture("Ezequiel 33:1–9","El sonido de la trompeta",`[1] Y vino a mí la palabra de Jehová, diciendo:
+[2] Hijo de hombre, habla a los hijos de tu pueblo y diles: Cuando yo traiga espada sobre la tierra, y el pueblo de la tierra tome a un hombre de su territorio y lo ponga por atalaya,
+[3] y él vea venir la espada sobre la tierra, y toque la trompeta y avise al pueblo,
+[4] cualquiera que oiga el sonido de la trompeta y no se dé por advertido, y al llegar la espada se lo lleva, su sangre será sobre su propia cabeza.
+[5] El sonido de la trompeta oyó, pero no se dio por advertido; su sangre será sobre él; pero el que se dé por advertido salvará su vida.
+[6] Pero si el atalaya ve venir la espada y no toca la trompeta, y el pueblo no se apercibe, y al llegar la espada se lleva a alguno de entre ellos, él, por causa de su iniquidad, será llevado, pero demandaré su sangre de mano del atalaya.
+[7] A ti, pues, oh hijo de hombre, te he puesto como atalaya de la casa de Israel, y oirás la palabra de mi boca y les advertirás de mi parte.
+[8] Cuando yo diga al malvado: Oh malvado, ciertamente morirás; si tú no hablas para advertir al malvado de su camino, ese malvado morirá por su iniquidad, pero su sangre yo la demandaré de tu mano.
+[9] Pero si tú adviertes al malvado de su camino para que se aparte de él, y él no se aparta de su camino, él morirá por su iniquidad, y tú habrás librado tu vida.`,"La trompeta permite al pueblo reconocer el peligro y escoger qué hará.","Ezequiel 33:1–9 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/33?lang=spa&id=p1-p9#p1")
+              ]
+            },
+            {
+              title:"Dios no se complace en la muerte del malvado",
+              text:"La voz de Jehová no busca condenar. Ruega que el pecador vuelva, cambie de camino y viva.",
+              question:"¿Qué muestra este ruego sobre el corazón de Dios?",
+              refs:[scripture("Ezequiel 33:10–11","Volveos y vivid",`[10] Tú, pues, hijo de hombre, di a la casa de Israel: Vosotros habéis hablado así, diciendo: Nuestras transgresiones y nuestros pecados están sobre nosotros, y por ellos nos estamos consumiendo, ¿cómo, pues, viviremos?
+[11] Diles: Vivo yo, dice Jehová el Señor, que no me complazco en la muerte del malvado, sino en que se vuelva el malvado de su camino y viva. ¡Volveos, volveos de vuestros malos caminos! ¿Por qué habéis de morir, oh casa de Israel?`,"La amonestación nace del deseo de Dios de perdonar y dar vida.","Ezequiel 33:10–11 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/33?lang=spa&id=p10-p11#p10")]
+            },
+            {
+              title:"Las buenas obras pasadas no justifican pecar",
+              text:"La rectitud pasada no reemplaza la fidelidad presente. Tampoco el pecado pasado cierra el camino del arrepentimiento.",
+              question:"¿Podemos sentir hoy el cambio que una vez sentimos?",
+              refs:[scripture("Ezequiel 33:12–20","Cada uno conforme a sus caminos",`[12] Por tanto, tú, hijo de hombre, di a los hijos de tu pueblo: La justicia del justo no lo librará el día en que transgreda; y la maldad del malvado no le será estorbo el día en que se vuelva de su maldad; y el justo no podrá vivir por su justicia el día en que peque.
+[13] Cuando yo diga al justo: De cierto vivirás, pero él, confiado en su justicia, cometa iniquidad, ninguna de sus justicias será recordada, sino que morirá por la iniquidad que cometió.
+[14] Y cuando yo diga al malvado: De cierto morirás, si él se vuelve de su pecado y hace lo que es justo y recto,
+[15] si el malvado restituye la prenda, devuelve lo que haya robado y camina en los estatutos de la vida, sin cometer injusticia, ciertamente vivirá; no morirá.
+[16] No se le recordará ninguno de sus pecados que había cometido; hizo lo que es justo y recto; ciertamente vivirá.
+[17] Pero dirán los hijos de tu pueblo: No es recto el camino del Señor; pero el camino de ellos es el que no es recto.
+[18] Cuando el justo se aparte de su justicia y haga injusticia, morirá por ello.
+[19] Y cuando el malvado se aparte de su maldad y haga lo que es justo y recto, vivirá por ello.
+[20] Y dijisteis: No es recto el camino del Señor. Yo os juzgaré, oh casa de Israel, a cada uno conforme a sus caminos.`,"El Señor acepta el arrepentimiento real y pide fidelidad presente.","Ezequiel 33:12–20 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/33?lang=spa&id=p12-p20#p12")]
+            },
+            {
+              title:"Escuchaban al profeta, pero no obedecían",
+              text:"Las palabras de Ezequiel podían sonar hermosas sin cambiar la conducta. Oír no era lo mismo que seguir.",
+              question:"¿Qué palabra ya escuchamos, pero aún no ponemos por obra?",
+              refs:[scripture("Ezequiel 33:30–33","Oyen tus palabras, pero no las ponen por obra",`[30] Y tú, hijo de hombre, los hijos de tu pueblo se mofan de ti junto a las paredes y a las puertas de las casas, y habla el uno con el otro, cada uno con su hermano, diciendo: Venid ahora, y oíd qué palabra viene de Jehová.
+[31] Y vienen a ti como viene el pueblo, y están delante de ti como pueblo mío y oyen tus palabras, pero no las ponen por obra, sino que hacen halagos con sus bocas, y el corazón de ellos anda en pos de su avaricia.
+[32] Y he aquí que tú eres para ellos como un cantor de amores, de hermosa voz y que toca bien un instrumento; y oyen tus palabras, pero no las ponen por obra.
+[33] Y cuando esto venga (he aquí que ya viene), sabrán que hubo profeta entre ellos.`,"La voz del profeta no es entretenimiento. Invita a obedecer y cambiar.","Ezequiel 33:30–33 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/33?lang=spa&id=p30-p33#p30")]
+            },
+            {
+              title:"Los pastores se alimentaban a sí mismos",
+              text:"Jehová midió a los pastores por el bien de las ovejas. El poder usado para beneficio propio traicionaba su deber.",
+              question:"¿Mi servicio busca a una persona o solo completa una tarea?",
+              refs:[scripture("Ezequiel 34:1–10","¿No deben los pastores apacentar a los rebaños?",`[1] Y vino a mí la palabra de Jehová, diciendo:
+[2] Hijo de hombre, profetiza contra los pastores de Israel; profetiza y di a los pastores: Así ha dicho Jehová el Señor: ¡Ay de los pastores de Israel que se apacientan a sí mismos! ¿No deben los pastores apacentar a los rebaños?
+[3] Coméis la grosura y os vestís de la lana; matáis a la oveja engordada, pero no apacentáis al rebaño.
+[4] No fortalecisteis a las débiles ni curasteis a la enferma; no vendasteis a la perniquebrada, ni hicisteis volver a la descarriada ni buscasteis a la perdida, sino que os habéis enseñoreado de ellas con violencia y con severidad.
+[5] Y han sido dispersadas por falta de pastor, y han llegado a ser comida de toda fiera del campo y han sido dispersadas.
+[6] Anduvieron perdidas mis ovejas por todos los montes y en todo collado alto; y por toda la faz de la tierra fueron dispersadas mis ovejas, y no hubo quien las buscase ni quien preguntase por ellas.
+[7] Por tanto, pastores, oíd la palabra de Jehová:
+[8] Vivo yo, ha dicho Jehová el Señor, que por cuanto mi rebaño fue para ser presa, y mis ovejas llegaron a ser comida de toda fiera del campo, porque no había pastor; y mis pastores no buscaron a mis ovejas, sino que los pastores se apacentaron a sí mismos y no apacentaron a mis ovejas,
+[9] por tanto, oh pastores, oíd la palabra de Jehová:
+[10] Así ha dicho Jehová el Señor: He aquí, yo estoy contra los pastores, y exigiré mis ovejas de su mano y haré que dejen de apacentar a las ovejas; y ya no se apacentarán más los pastores a sí mismos, pues yo libraré a mis ovejas de sus bocas, y no les serán más por comida.`,"La autoridad del pastor existe para alimentar y proteger al rebaño.","Ezequiel 34:1–10 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/34?lang=spa&id=p1-p10#p1")]
+            },
+            {
+              title:"No fortalecieron, curaron ni buscaron",
+              text:"El pecado no fue solo hacer daño. También fue omitir el cuidado que las ovejas heridas necesitaban.",
+              question:"¿Quién necesita hoy que estemos con esa persona?",
+              refs:[scripture("Ezequiel 34:4–6","Las débiles, enfermas, heridas y perdidas",`[4] No fortalecisteis a las débiles ni curasteis a la enferma; no vendasteis a la perniquebrada, ni hicisteis volver a la descarriada ni buscasteis a la perdida, sino que os habéis enseñoreado de ellas con violencia y con severidad.
+[5] Y han sido dispersadas por falta de pastor, y han llegado a ser comida de toda fiera del campo y han sido dispersadas.
+[6] Anduvieron perdidas mis ovejas por todos los montes y en todo collado alto; y por toda la faz de la tierra fueron dispersadas mis ovejas, y no hubo quien las buscase ni quien preguntase por ellas.`,"Jehová enumera el cuidado que faltó: fortalecer, curar, vendar, hacer volver y buscar.","Ezequiel 34:4–6 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/34?lang=spa&id=p4-p6#p4")]
+            },
+            {
+              title:"Las ovejas fuertes también dañaban a las débiles",
+              text:"Jehová no reprendió solo a los líderes. También juzgó a quienes empujaban, ensuciaban y dispersaban a otros.",
+              question:"¿Dejo agua limpia y espacio seguro para los demás?",
+              refs:[scripture("Ezequiel 34:17–22","Juzgaré entre oveja y oveja",`[17] Mas en cuanto a vosotras, ovejas mías, así ha dicho Jehová el Señor: He aquí, yo juzgo entre oveja y oveja, entre carneros y machos cabríos.
+[18] ¿No os basta con comer los buenos pastos, sino que también holláis con vuestros pies lo que de vuestros pastos queda, y con beber las aguas claras, sino que enturbiáis además con vuestros pies las que quedan?
+[19] Y mis ovejas comen lo que vuestros pies han hollado y beben lo que con vuestros pies habéis enturbiado.
+[20] Por tanto, así les dice Jehová el Señor: He aquí, yo, yo mismo juzgaré entre la oveja engordada y la oveja flaca.
+[21] Por cuanto empujasteis con el costado y con el hombro, y acorneasteis con vuestros cuernos a todas las débiles, hasta que las dispersasteis lejos,
+[22] yo salvaré a mis ovejas, y nunca más servirán de presa; y juzgaré entre oveja y oveja.`,"Cada miembro del rebaño responde por la forma en que trata a los débiles.","Ezequiel 34:17–22 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/34?lang=spa&id=p17-p22#p17")]
+            },
+            {
+              title:"Jehová mismo buscaría a Sus ovejas",
+              text:"El Buen Pastor reconoce, busca, reúne, alimenta, venda y fortalece. También promete un Pastor y un convenio de paz.",
+              question:"¿Qué acción del Buen Pastor puedes imitar esta semana?",
+              refs:[scripture("Ezequiel 34:11–16, 23–31","Yo mismo buscaré a mis ovejas",`[11] Porque así ha dicho Jehová el Señor: He aquí, yo, yo mismo buscaré a mis ovejas y las reconoceré.
+[12] Como reconoce a su rebaño el pastor el día en que está en medio de sus ovejas dispersadas, así reconoceré a mis ovejas y las libraré de todos los lugares en que fueron dispersadas un día nublado y oscuro.
+[13] Y yo las sacaré de los pueblos y las juntaré de las tierras; y las traeré a su propia tierra y las apacentaré en los montes de Israel, por las riberas y en todos los lugares habitados del país.
+[14] En buenos pastos las apacentaré, y en los altos montes de Israel estará su redil; allí dormirán en buen redil, y con ricos pastos serán apacentadas sobre los montes de Israel.
+[15] Yo apacentaré a mis ovejas y yo las haré recostar, dice Jehová el Señor.
+[16] Yo buscaré a la oveja perdida, y haré volver a la descarriada, y vendaré a la perniquebrada y fortaleceré a la débil; pero a la engordada y a la fuerte destruiré. Yo las apacentaré con justicia.
+
+[23] Y levantaré sobre ellas a un pastor, y él las apacentará: mi siervo David; él las apacentará y él será su pastor.
+[24] Yo, Jehová, seré su Dios, y mi siervo David será príncipe en medio de ellos. Yo, Jehová, he hablado.
+[25] Y haré con ellos un convenio de paz y exterminaré de la tierra las fieras; y habitarán en el desierto con seguridad y dormirán en los bosques.
+[26] Y haré de ellos y de los alrededores de mi collado una bendición; y haré descender la lluvia en su tiempo, lluvias de bendición serán.
+[27] Y el árbol del campo dará su fruto, y la tierra dará su fruto, y estarán sobre su tierra con seguridad; y sabrán que yo soy Jehová, cuando rompa las coyundas de su yugo y los libre de manos de los que se sirven de ellos.
+[28] Y no serán más presa de las naciones, ni las fieras de la tierra los devorarán, sino que habitarán con seguridad, y no habrá quien los espante;
+[29] y levantaré para ellos un plantío de renombre, y nunca más serán consumidos por el hambre en la tierra ni serán más avergonzados por las naciones.
+[30] Y sabrán que yo, Jehová, su Dios, estoy con ellos, y que ellos son mi pueblo, la casa de Israel, dice Jehová el Señor.
+[31] Y vosotras, ovejas mías, ovejas de mi prado, hombres sois, y yo soy vuestro Dios, dice Jehová el Señor.`,"Jesucristo cumple el cuidado que los pastores fallaron en dar y reúne a Israel bajo un Pastor.","Ezequiel 34:11–16, 23–31 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/34?lang=spa&id=p11-p16,p23-p31#p11")]
+            }
+          ],
+          supports:[
+            scripture("Alma 5:26–28","¿Podéis sentir esto ahora?",`[26] Y ahora os digo, hermanos míos, si habéis experimentado un cambio en el corazón, y si habéis sentido el deseo de cantar la canción del amor que redime, quisiera preguntaros: ¿Podéis sentir esto ahora?
+[27] ¿Habéis caminado, conservándoos irreprensibles delante de Dios? Si os tocase morir en este momento, ¿podríais decir, dentro de vosotros, que habéis sido suficientemente humildes? ¿que vuestros vestidos han sido lavados y blanqueados mediante la sangre de Cristo, que vendrá para redimir a su pueblo de sus pecados?
+[28] He aquí, ¿os halláis despojados del orgullo? Si no, yo os digo que no estáis preparados para comparecer ante Dios. He aquí, debéis disponeros prontamente; porque el reino de los cielos pronto se acerca, y el que no esté preparado no tendrá vida eterna.`,"Haber cambiado antes no sustituye vivir rectamente ahora.","Alma 5:26–28 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/5?lang=spa&id=p26-p28#p26"),
+            scripture("Alma 5:37–41","El Buen Pastor todavía llama",`[37] ¡Oh obradores de iniquidad, vosotros que os habéis engreído con las vanidades del mundo, vosotros que habéis declarado conocer las sendas de la rectitud, y, sin embargo, os habéis descarriado como ovejas sin pastor, no obstante que un pastor os ha llamado, y os está llamando aún, pero vosotros no queréis escuchar su voz!
+[38] He aquí, os digo que el buen pastor os llama; sí, y os llama en su propio nombre, el cual es el nombre de Cristo; y si no queréis dar oídos a la voz del buen pastor, al nombre por el cual sois llamados, he aquí, no sois las ovejas del buen pastor.
+[39] Y si no sois las ovejas del buen pastor, ¿de qué rebaño sois? He aquí, os digo que el diablo es vuestro pastor, y vosotros sois de su rebaño; y ahora bien, ¿quién puede negarlo? He aquí, os digo que quien niega esto es un embustero e hijo del diablo.
+[40] Porque os digo que todo lo que es bueno viene de Dios; y todo lo que es malo, del diablo procede.
+[41] Por lo tanto, si un hombre hace buenas obras, él escucha la voz del buen pastor y lo sigue; pero el que hace malas obras, este se convierte en hijo del diablo, porque escucha su voz y lo sigue.`,"Cristo sigue llamando por Su nombre. Escuchar Su voz produce obras buenas.","Alma 5:37–41 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/5?lang=spa&id=p37-p41#p37"),
+            scripture("Mosíah 18:8–10","Llevar, llorar y consolar",`[8] Y aconteció que les dijo: He aquí las aguas de Mormón (porque así se llamaban); y ya que deseáis entrar en el redil de Dios y ser llamados su pueblo, y estáis dispuestos a llevar las cargas los unos de los otros para que sean ligeras;
+[9] sí, y estáis dispuestos a llorar con los que lloran; sí, y a consolar a los que necesitan de consuelo, y ser testigos de Dios en todo tiempo, y en todas las cosas y en todo lugar en que estuvieseis, aun hasta la muerte, para que seáis redimidos por Dios, y seáis contados con los de la primera resurrección, para que tengáis vida eterna;
+[10] os digo ahora, si este es el deseo de vuestros corazones, ¿qué os impide ser bautizados en el nombre del Señor, como testimonio ante él de que habéis concertado un convenio con él de que lo serviréis y guardaréis sus mandamientos, para que él derrame su Espíritu más abundantemente sobre vosotros?`,"El pueblo del convenio cuida las cargas, lágrimas y necesidades de otros.","Mosíah 18:8–10 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/18?lang=spa&id=p8-p10#p8"),
+            scripture("2 Nefi 26:29–31","El obrero trabaja para Sion",`[29] Él manda que no haya supercherías; porque he aquí, son supercherías sacerdotales el que los hombres prediquen y se constituyan a sí mismos como una luz al mundo, con el fin de obtener lucro y alabanza del mundo; pero no buscan el bien de Sion.
+[30] He aquí, el Señor ha vedado esto; por tanto, el Señor Dios ha dado el mandamiento de que todos los hombres tengan caridad, y esta caridad es amor. Y a menos que tengan caridad, no son nada. Por tanto, si tuviesen caridad, no permitirían que pereciera el obrero en Sion.
+[31] Mas el obrero en Sion trabajará para Sion; porque si trabaja por dinero, perecerá.`,"El verdadero obrero busca el bien de Sion, no ganancia ni alabanza.","2 Nefi 26:29–31 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/2-ne/26?lang=spa&id=p29-p31#p29"),
+            scripture("Helamán 12:1–6","La comodidad puede hacernos olvidar",`[1] Y así podemos ver cuán falso e inconstante es el corazón de los hijos de los hombres; sí, podemos ver que el Señor en su grande e infinita bondad bendice y hace prosperar a aquellos que en él ponen su confianza.
+[2] Sí, y podemos ver que es precisamente en la ocasión en que hace prosperar a su pueblo, sí, en el aumento de sus campos, sus hatos y sus rebaños, y en oro, en plata y en toda clase de objetos preciosos de todo género y arte; preservando sus vidas y librándolos de las manos de sus enemigos; ablandando el corazón de sus enemigos para que no les declaren guerras; sí, y en una palabra, haciendo todas las cosas para el bienestar y felicidad de su pueblo; sí, entonces es la ocasión en que endurecen sus corazones, y se olvidan del Señor su Dios, y huellan con los pies al Santo; sí, y esto a causa de su comodidad y su extrema prosperidad.
+[3] Y así vemos que excepto que el Señor discipline a su pueblo con muchas aflicciones, sí, a menos que lo visite con muerte y con terror, y con hambre y con toda clase de pestilencias, no se acuerda de él.
+[4] ¡Oh cuán insensatos y cuán vanos, cuán malignos y diabólicos, y cuán prontos a cometer iniquidad y cuán lentos en hacer lo bueno son los hijos de los hombres! ¡Sí, cuán prestos son a escuchar las palabras del maligno y a poner su corazón en las vanidades del mundo!
+[5] ¡Sí, cuán prestos están para ensalzarse en el orgullo; sí, cuán prestos para jactarse y cometer toda clase de aquello que es iniquidad; y cuán lentos son en acordarse del Señor su Dios y en dar oído a sus consejos; sí, cuán lentos son en andar por las vías de la prudencia!
+[6] He aquí, no desean que los gobierne y reine sobre ellos el Señor su Dios que los ha creado; a pesar de su gran benevolencia y su misericordia para con ellos, desprecian sus consejos, y no quieren que él sea su guía.`,"La prosperidad puede endurecer el corazón si dejamos de recordar al Señor.","Helamán 12:1–6 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/hel/12?lang=spa&id=p1-p6#p1"),
+            scripture("Alma 34:32–35","No demoréis el arrepentimiento",`[32] Porque he aquí, esta vida es cuando el hombre debe prepararse para comparecer ante Dios; sí, el día de esta vida es el día en que el hombre debe ejecutar su obra.
+[33] Y como os dije antes, ya que habéis tenido tantos testimonios, os ruego, por tanto, que no demoréis el día de vuestro arrepentimiento hasta el fin; porque después de este día de vida, que se nos da para prepararnos para la eternidad, he aquí que si no mejoramos nuestro tiempo durante esta vida, entonces viene la noche de tinieblas en la cual no se puede hacer obra alguna.
+[34] No podréis decir, cuando os halléis ante esa terrible crisis: Me arrepentiré, me volveré a mi Dios. No, no podréis decir esto; porque el mismo espíritu que posea vuestros cuerpos al salir de esta vida, ese mismo espíritu tendrá poder para poseer vuestro cuerpo en aquel mundo eterno.
+[35] Porque si habéis demorado el día de vuestro arrepentimiento, aun hasta la muerte, he aquí, os habéis sujetado al espíritu del diablo y él os sella como cosa suya; por tanto, se ha retirado de vosotros el Espíritu del Señor y no tiene cabida en vosotros, y el diablo tiene todo poder sobre vosotros; y este es el estado final del malvado.`,"El día para volver al Señor y formar un nuevo corazón es hoy.","Alma 34:32–35 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/34?lang=spa&id=p32-p35#p32")
+          ],
+          quotes:[
+            quote("Élder Christofferson · 2017","Amonestar es preocuparse",`La motivación para elevar la voz de amonestación es el amor: el amor a Dios y a los semejantes. Amonestar es preocuparse. El Señor instruye que debe hacerse “con mansedumbre y humildad” y “por persuasión, por longanimidad, benignidad… y por amor sincero”. Puede ser urgente, como cuando advertimos a un niño que no ponga la mano en el fuego. Debe expresarse con claridad y a veces con firmeza. En ocasiones, la amonestación puede adquirir la forma de una reprimenda “cuando lo induzca el Espíritu Santo”, pero siempre está fundada en el amor; por ejemplo, el amor que motiva el servicio y los sacrificios de nuestros misioneros.`,"La advertencia del atalaya nace del amor y busca proteger.","D. Todd Christofferson · “La voz de amonestación” · Abril de 2017",URLS.warning),
+            quote("Presidente Nelson · 2019","El arrepentimiento es un proceso",`Nada es más liberador, más ennoblecedor ni más crucial para nuestro progreso individual que centrarse con regularidad y a diario en el arrepentimiento. El arrepentimiento no es un suceso; es un proceso; es la clave de la felicidad y la paz interior; cuando lo acompaña la fe, el arrepentimiento despeja el acceso al poder de la expiación de Jesucristo.
+
+Ya sea que avancen con diligencia por la senda de los convenios, que hayan tropezado o se hayan apartado de tal senda, o que ni siquiera puedan ver dicha senda desde donde estén ahora, les ruego que se arrepientan. Sientan el poder fortalecedor del arrepentimiento diario; de actuar y de ser un poco mejor cada día.`,"El ruego de Ezequiel apunta al cambio diario mediante Jesucristo.","Russell M. Nelson · “Podemos actuar mejor y ser mejores” · Abril de 2019",URLS.repent),
+            quote("Élder Caussé · 2018","Lo importante son las personas",`El presidente M. Russell Ballard enseñó: “Lo más importante en nuestras responsabilidades de la Iglesia no son las estadísticas que se informan ni las reuniones que se llevan a cabo, sino que las personas (a las que se ministra individualmente, como lo hizo el Salvador) hayan sido edificadas, hayan recibido aliento y, al final, hayan cambiado”.
+
+Mis queridos hermanos y hermanas, ¿somos activos en el Evangelio o estamos simplemente ocupados en la Iglesia? La clave es seguir el ejemplo del Salvador en todas las cosas. Si lo hacemos, nos centraremos naturalmente en salvar a personas en lugar de realizar tareas o implementar programas.`,"Los pastores cuidan personas; los programas solo apoyan ese cuidado.","Gérald Caussé · “Lo importante son las personas” · Abril de 2018",URLS.people),
+            quote("Élder Holland · 2018","Cuidar de una manera más audaz y santa",`de ministrar a la viuda y al huérfano, al casado y al soltero, al fuerte y al desamparado, al oprimido y al firme, al feliz y al triste; en resumen, a todos, a cada uno de nosotros, porque todos necesitamos sentir la mano cálida de la amistad y oír la declaración firme de fe. Sin embargo, les advierto, un término nuevo, una mayor flexibilidad y un número menor de informes no supondrán ni una pizca de diferencia en nuestro servicio, a menos que lo veamos como una invitación a cuidar los unos de los otros de una manera más audaz y santa, como acaba de decir el presidente Nelson.`,"El pueblo del convenio fortalece, consuela y carga junto con cada oveja.","Jeffrey R. Holland · “Estar con ellos y fortalecerlos” · Abril de 2018",URLS.strengthen),
+            quote("Presidente Uchtdorf · 2015","La Iglesia es un lugar para sanar",`La Iglesia no es una sala de exposición de automóviles, es decir, un lugar donde nos exhibimos para que los demás admiren nuestra espiritualidad, capacidad o prosperidad. Se parece más a un taller de servicios donde los vehículos que necesitan reparación van a recibir mantenimiento y reajuste.
+
+¿Acaso no todos tenemos la necesidad de reparación, mantenimiento y reajuste?
+
+No vamos a la Iglesia a esconder nuestros problemas sino a sanarlos.
+
+Nosotros, los poseedores del sacerdocio, tenemos la responsabilidad adicional de “[apacentar] la grey de Dios… no por fuerza, sino voluntariamente; no por ganancia [personal], sino con ánimo pronto; no como teniendo señorío sobre los rebaños del Señor, sino siendo ejemplos de la grey”.`,"El rebaño no necesita apariencias. Necesita verdad, humildad y sanación.","Dieter F. Uchtdorf · “El ser genuinos” · Abril de 2015",URLS.genuine)
+          ]
+        },
+        {
+          id:"parte-3",
+          eyebrow:"Parte 3 de 3 · Esperanza y restauración",
+          title:"Dios puede dar vida a lo que parece muerto",
+          lead:"La esperanza no evita el arrepentimiento. Muestra lo que Jesucristo puede hacer cuando Su pueblo vuelve a Él.",
+          lensNote:"La promesa crece: corazón nuevo, pueblo reunido, Resurrección y templo.",
+          topics:[
+            {
+              title:"Os daré un corazón nuevo",
+              text:"Jehová promete reunir, limpiar y cambiar los deseos. El Espíritu hace posible una forma nueva de vivir.",
+              question:"¿Qué deseo necesitas pedir que Cristo cambie?",
+              refs:[scripture("Ezequiel 36:24–32","Un corazón de carne reemplaza al de piedra",`[24] Y yo os tomaré de las naciones, y os recogeré de todos los países y os traeré a vuestra propia tierra.
+[25] Y esparciré sobre vosotros agua limpia, y seréis purificados de todas vuestras impurezas; y de todos vuestros ídolos os limpiaré.
+[26] Y os daré un corazón nuevo y pondré un espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra y os daré un corazón de carne.
+[27] Y pondré dentro de vosotros mi espíritu, y haré que andéis en mis estatutos y que guardéis mis juicios y los pongáis por obra.
+[28] Y habitaréis en la tierra que di a vuestros padres; y vosotros seréis mi pueblo, y yo seré vuestro Dios.
+[29] Y os salvaré de todas vuestras impurezas; y llamaré al trigo y lo multiplicaré, y no os traeré el hambre.
+[30] Multiplicaré asimismo el fruto de los árboles y el fruto de los campos, para que nunca más recibáis el oprobio del hambre entre las naciones.
+[31] Y os acordaréis de vuestros malos caminos y de vuestras obras que no fueron buenas, y os aborreceréis a vosotros mismos por vuestras iniquidades y por vuestras abominaciones.
+[32] No lo hago por vosotros, dice Jehová el Señor; sabedlo bien; avergonzaos y turbaos por causa de vuestros caminos, oh casa de Israel.`,"La limpieza y el corazón nuevo no borran el arrepentimiento. Lo hacen posible mediante el Espíritu.","Ezequiel 36:24–32 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/36?lang=spa&id=p24-p32#p24")]
+            },
+            {
+              title:"La tierra desolada será como Edén",
+              text:"La restauración alcanza el corazón, las ciudades y la tierra. Jehová reedifica lo derribado y planta lo desolado.",
+              question:"¿Qué ruina podría convertirse en un lugar de vida?",
+              refs:[scripture("Ezequiel 36:33–36","Yo reedifiqué y planté",`[33] Así ha dicho Jehová el Señor: El día en que os purifique de todas vuestras iniquidades, haré también que sean habitadas las ciudades, y las ruinas serán reedificadas.
+[34] Y la tierra desolada será labrada, en lugar de ser la desolación que había sido ante los ojos de todos los que pasaban.
+[35] Y dirán: Esta tierra desolada se ha convertido en un huerto de Edén; y estas ciudades que se hallaban desiertas, y desoladas y arruinadas ya están fortificadas y habitadas.
+[36] Y las naciones que queden en vuestros alrededores sabrán que yo reedifiqué lo que estaba derribado, y planté lo que estaba desolado; yo, Jehová, he hablado y lo haré.`,"La restauración visible testifica que Jehová cumple Su palabra.","Ezequiel 36:33–36 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/36?lang=spa&id=p33-p36#p33")]
+            },
+            {
+              title:"¿Vivirán estos huesos?",
+              text:"La palabra de Jehová reúne lo disperso. Después el espíritu entra y un ejército vuelve a ponerse de pie.",
+              question:"¿Dónde necesitas responder: “Tú lo sabes”?",
+              refs:[scripture("Ezequiel 37:1–10","Los huesos oyeron y vivieron",`[1] Y la mano de Jehová vino sobre mí, y me llevó en el espíritu de Jehová y me puso en medio de un valle que estaba lleno de huesos.
+[2] Y me hizo pasar alrededor de ellos, y he aquí que eran muchísimos sobre la faz del valle, y he aquí, estaban secos en gran manera.
+[3] Y me dijo: Hijo de hombre, ¿vivirán estos huesos? Y dije: oh Señor, Jehová, tú lo sabes.
+[4] Me dijo entonces: Profetiza sobre estos huesos, y diles: Huesos secos, oíd la palabra de Jehová.
+[5] Así ha dicho Jehová el Señor a estos huesos: He aquí, yo hago entrar espíritu en vosotros, y viviréis.
+[6] Y pondré tendones en vosotros, y haré subir carne sobre vosotros, y os cubriré de piel y pondré en vosotros espíritu, y viviréis; y sabréis que yo soy Jehová.
+[7] Profeticé, pues, como me fue mandado; y hubo un ruido mientras yo profetizaba, y he aquí un temblor, y los huesos se juntaron cada hueso con su hueso.
+[8] Y miré, y he aquí tendones sobre ellos, y subió la carne, y quedaron cubiertos por la piel; pero no había en ellos espíritu.
+[9] Y me dijo: Profetiza al espíritu; profetiza, hijo de hombre, y di al espíritu: Así ha dicho Jehová el Señor: Oh espíritu, ven de los cuatro vientos y sopla sobre estos muertos, y vivirán.
+[10] Y profeticé como me había mandado; y entró espíritu en ellos, y vivieron y se pusieron de pie, un ejército grande en extremo.`,"La vida llega por la palabra y el poder de Jehová, no por la fuerza de los huesos.","Ezequiel 37:1–10 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/37?lang=spa&id=p1-p10#p1")],
+              note:{title:"Dos sentidos oficiales",text:"La visión enseña la Resurrección física y la restauración de la casa de Israel.",label:"Leer la explicación oficial",url:URLS.ezekielManual27}
+            },
+            {
+              title:"Pereció nuestra esperanza",
+              text:"Jehová responde a un pueblo sin esperanza. Abre sepulcros, da Su Espíritu y promete reposo en su tierra.",
+              question:"¿Qué palabra de Cristo puede entrar en tu desesperanza?",
+              refs:[scripture("Ezequiel 37:11–14","Pondré mi espíritu en vosotros, y viviréis",`[11] Me dijo luego: Hijo de hombre, todos estos huesos son la casa de Israel. He aquí, ellos dicen: Nuestros huesos se secaron, y pereció nuestra esperanza, y somos del todo talados.
+[12] Por tanto, profetiza, y diles: Así ha dicho Jehová el Señor: He aquí yo abro vuestros sepulcros, oh pueblo mío, y os haré subir de vuestras sepulturas y os traeré a la tierra de Israel.
+[13] Y sabréis que yo soy Jehová cuando yo abra vuestros sepulcros y os saque de vuestras sepulturas, oh pueblo mío.
+[14] Y pondré mi espíritu en vosotros, y viviréis; y os haré reposar en vuestra tierra; y sabréis que yo, Jehová, he hablado, y lo haré, dice Jehová.`,"Jehová aplica la imagen a la casa de Israel y promete vida donde la esperanza había perecido.","Ezequiel 37:11–14 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/37?lang=spa&id=p11-p14#p11")]
+            },
+            {
+              title:"La Resurrección será real y completa",
+              text:"La visión no es solo símbolo. Jesucristo reunirá cuerpo y espíritu en su forma perfecta para no separarse otra vez.",
+              question:"¿A quién esperas volver a ver en perfecta vida?",
+              refs:[
+                scripture("Ezequiel 37:12–14","Yo abro vuestros sepulcros",`[12] Por tanto, profetiza, y diles: Así ha dicho Jehová el Señor: He aquí yo abro vuestros sepulcros, oh pueblo mío, y os haré subir de vuestras sepulturas y os traeré a la tierra de Israel.
+[13] Y sabréis que yo soy Jehová cuando yo abra vuestros sepulcros y os saque de vuestras sepulturas, oh pueblo mío.
+[14] Y pondré mi espíritu en vosotros, y viviréis; y os haré reposar en vuestra tierra; y sabréis que yo, Jehová, he hablado, y lo haré, dice Jehová.`,"La promesa de abrir los sepulcros tiene un cumplimiento literal por Jesucristo.","Ezequiel 37:12–14 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/37?lang=spa&id=p12-p14#p12"),
+                scripture("Alma 11:42–45","Restaurados a su perfecta forma",`[42] Ahora bien, hay una muerte que se llama la muerte temporal; y la muerte de Cristo desatará las ligaduras de esta muerte temporal, de modo que todos se levantarán de esta muerte.
+[43] El espíritu y el cuerpo serán reunidos otra vez en su perfecta forma; los miembros así como las coyunturas serán restaurados a su propia forma, tal como nos hallamos ahora; y seremos llevados ante Dios, conociendo tal como ahora conocemos, y tendremos un vivo recuerdo de toda nuestra culpa.
+[44] Pues bien, esta restauración vendrá sobre todos, tanto viejos como jóvenes, esclavos así como libres, varones así como mujeres, malvados así como justos; y no se perderá ni un solo pelo de su cabeza, sino que todo será restablecido a su perfecta forma, o en el cuerpo, cual se encuentra ahora, y serán llevados a comparecer ante el tribunal de Cristo el Hijo, y Dios el Padre, y el Santo Espíritu, que son un Eterno Dios, para ser juzgados según sus obras, sean buenas o malas.
+[45] Ahora bien, he aquí, te he hablado concerniente a la muerte del cuerpo mortal y también acerca de la resurrección del cuerpo mortal. Te digo que este cuerpo mortal se levanta como cuerpo inmortal, es decir, de la muerte, sí, de la primera muerte a vida, de modo que no pueden morir ya más; sus espíritus se unirán a sus cuerpos para no ser separados nunca más; por lo que esta unión se torna espiritual e inmortal, para no volver a ver corrupción.`,"Amulek explica la forma, el alcance y la permanencia de la Resurrección.","Alma 11:42–45 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/11?lang=spa&id=p42-p45#p42")
+              ]
+            },
+            {
+              title:"Un pueblo, un Rey y un Pastor",
+              text:"Los dos registros se unen. Israel también se reúne, se purifica y vive bajo Jesucristo y Su convenio de paz.",
+              question:"¿Cómo te han acercado a Cristo estos dos testigos?",
+              refs:[scripture("Ezequiel 37:15–28","Serán uno solo en mi mano",`[15] Y vino a mí la palabra de Jehová, diciendo:
+[16] Y tú, hijo de hombre, toma ahora un palo y escribe en él: Para Judá, y para los hijos de Israel, sus compañeros. Toma después otro palo y escribe en él: Para José, palo de Efraín, y para toda la casa de Israel, sus compañeros.
+[17] Júntalos luego el uno con el otro, para que sean uno solo, y serán uno solo en tu mano.
+[18] Y cuando te hablen los hijos de tu pueblo, diciendo: ¿No nos explicarás qué quieres decir con eso?
+[19] Diles: Así ha dicho Jehová el Señor: He aquí, yo tomo el palo de José que está en la mano de Efraín, y a las tribus de Israel, sus compañeros, y los pondré con él, con el palo de Judá, y los haré un solo palo, y serán uno en mi mano.
+[20] Y los palos sobre los que escribas estarán en tu mano delante de sus ojos;
+[21] y les dirás: Así ha dicho Jehová el Señor: He aquí, yo tomo a los hijos de Israel de entre las naciones a las cuales fueron, y los recogeré de todas partes y los traeré a su propia tierra.
+[22] Y haré de ellos una sola nación en la tierra, en los montes de Israel; y un mismo rey será el rey de todos ellos; y nunca más serán dos naciones, ni nunca más estarán divididos en dos reinos.
+[23] Y no se contaminarán ya más con sus ídolos, ni con sus abominaciones ni con todas sus transgresiones; y los salvaré de todos los lugares en los cuales han pecado, y los purificaré; y serán mi pueblo, y yo seré su Dios.
+[24] Y mi siervo David será rey sobre ellos, y para todos ellos habrá un solo pastor; y andarán en mis juicios, y guardarán mis estatutos y los pondrán por obra.
+[25] Y habitarán en la tierra que di a mi siervo Jacob, en la cual habitaron vuestros padres; en ella habitarán ellos, y sus hijos y los hijos de sus hijos para siempre; y mi siervo David será su príncipe para siempre.
+[26] Y haré con ellos un convenio de paz; será un convenio sempiterno con ellos; y los estableceré y los multiplicaré, y pondré mi santuario entre ellos para siempre.
+[27] Y estará en medio de ellos mi tabernáculo; yo seré su Dios, y ellos serán mi pueblo.
+[28] Y sabrán las naciones que yo, Jehová, santifico a Israel, cuando esté mi santuario en medio de ellos para siempre.`,"La Biblia y el Libro de Mormón anuncian a Cristo y participan en el recogimiento de Su pueblo.","Ezequiel 37:15–28 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/37?lang=spa&id=p15-p28#p15")]
+            },
+            {
+              title:"El río del templo sana todo",
+              text:"El agua crece, entra al desierto y sana el mar. Donde parecía imposible vivir, aparecen peces, fruto y medicina.",
+              question:"¿Qué sanación has sentido desde la Casa del Señor?",
+              refs:[scripture("Ezequiel 47:1–12","Vivirá todo lo que entre en este río",`[1] Después, me hizo volver a la entrada de la casa; y he aquí aguas brotaban de debajo del umbral de la casa hacia el oriente, porque la fachada de la casa daba al oriente; y las aguas descendían desde debajo del lado derecho de la casa, por el costado sur del altar.
+[2] Y me sacó por el camino de la puerta del norte y me hizo dar la vuelta por el camino exterior, hasta la puerta exterior que mira al oriente; y he aquí, las aguas fluían del lado derecho.
+[3] Y cuando el varón salió hacia el oriente, tenía un cordel en su mano; y midió mil codos y me hizo pasar por las aguas, con el agua hasta los tobillos.
+[4] Y midió otros mil y me hizo pasar por las aguas, con el agua hasta las rodillas. Midió luego otros mil y me hizo pasar por las aguas, hasta los lomos.
+[5] Y midió otros mil, y era ya un río que yo no podía pasar, porque las aguas habían crecido, y el río no se podía pasar sino a nado.
+[6] Y me dijo: ¿Has visto, hijo de hombre? Después me llevó y me hizo volver por la ribera del río.
+[7] Y cuando volví, he aquí que en la ribera del río había muchísimos árboles a uno y otro lado.
+[8] Y me dijo: Estas aguas salen a la región del oriente, y descenderán al desierto y entrarán en el mar; y al entrar en el mar, las aguas serán sanadas.
+[9] Y acontecerá que toda alma viviente que nade por dondequiera que entren estos dos ríos, vivirá; y habrá muchísimos peces por haber entrado allá estas aguas, pues serán sanadas; y vivirá todo lo que entre en este río.
+[10] Y sucederá que junto a él habrá pescadores, y desde En-gadi hasta En-eglaim será tendedero de redes; y los peces, según su especie, serán tan abundantes como los del mar Grande.
+[11] Sus pantanos y sus lagunas no serán sanados; quedarán para salinas.
+[12] Y junto al río, en la ribera, a uno y otro lado, crecerá toda clase de árboles frutales; sus hojas nunca caerán, ni faltará su fruto; a su tiempo madurará, porque sus aguas salen del santuario; y su fruto será para comer y sus hojas para medicina.`,"El río representa el poder creciente de la Casa del Señor para dar vida y sanar.","Ezequiel 47:1–12 · Antiguo Testamento","https://www.churchofjesuschrist.org/study/scriptures/ot/ezek/47?lang=spa&id=p1-p12#p1")],
+              note:{title:"Dos sentidos oficiales",text:"El agua sanará el mar Muerto desde el futuro templo de Jerusalén. También representa las bendiciones del templo que dan vida y sanan.",label:"Leer la explicación oficial",url:URLS.ezekielManual27}
+            }
+          ],
+          supports:[
+            scripture("Mosíah 5:2–9","Un potente cambio y el nombre de Cristo",`[2] Y todos clamaron a una voz, diciendo: Sí, creemos todas las palabras que nos has hablado; y además, sabemos de su certeza y verdad por el Espíritu del Señor Omnipotente, el cual ha efectuado un potente cambio en nosotros, o sea, en nuestros corazones, por lo que ya no tenemos más disposición a obrar mal, sino a hacer lo bueno continuamente.
+[3] Y también nosotros mismos, por medio de la infinita bondad de Dios y las manifestaciones de su Espíritu, tenemos grandes visiones de aquello que está por venir; y si fuere necesario, podríamos profetizar de todas las cosas.
+[4] Y es la fe que hemos tenido en las cosas que nuestro rey nos ha hablado lo que nos ha llevado a este gran conocimiento, por lo que nos regocijamos con un gozo tan sumamente grande.
+[5] Y estamos dispuestos a concertar un convenio con nuestro Dios de hacer su voluntad y ser obedientes a sus mandamientos en todas las cosas que él nos mande, todo el resto de nuestros días, para que no traigamos sobre nosotros un tormento sin fin, como lo ha declarado el ángel, para que no bebamos del cáliz de la ira de Dios.
+[6] Ahora bien, estas palabras eran las que de ellos deseaba el rey Benjamín; y por lo tanto, les dijo: Habéis declarado las palabras que yo deseaba; y el convenio que habéis hecho es un convenio justo.
+[7] Ahora pues, a causa del convenio que habéis hecho, seréis llamados progenie de Cristo, hijos e hijas de él, porque he aquí, hoy él os ha engendrado espiritualmente; pues decís que vuestros corazones han cambiado por medio de la fe en su nombre; por tanto, habéis nacido de él y habéis llegado a ser sus hijos y sus hijas.
+[8] Y bajo este título sois librados, y no hay otro título por medio del cual podáis ser librados. No hay otro nombre dado por el cual venga la salvación; por tanto, quisiera que tomaseis sobre vosotros el nombre de Cristo, todos vosotros que habéis hecho convenio con Dios de ser obedientes hasta el fin de vuestras vidas.
+[9] Y sucederá que quien hiciere esto, se hallará a la diestra de Dios, porque sabrá el nombre por el cual es llamado; pues será llamado por el nombre de Cristo.`,"El Espíritu cambia el corazón y el convenio da una nueva identidad en Cristo.","Mosíah 5:2–9 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/5?lang=spa&id=p2-p9#p2"),
+            scripture("Éter 12:26–28","La debilidad puede llegar a ser fuerte",`[26] Y cuando hube dicho esto, el Señor me habló, diciendo: Los insensatos hacen burla, mas se lamentarán; y mi gracia es suficiente para los mansos, para que no saquen provecho de vuestra debilidad;
+[27] y si los hombres vienen a mí, les mostraré su debilidad. Doy a los hombres debilidad para que sean humildes; y basta mi gracia a todos los hombres que se humillan ante mí; porque si se humillan ante mí, y tienen fe en mí, entonces haré que las cosas débiles sean fuertes para ellos.
+[28] He aquí, mostraré a los gentiles su debilidad, y les mostraré que la fe, la esperanza y la caridad conducen a mí, la fuente de toda rectitud.`,"La gracia de Cristo no solo cubre la debilidad. Puede convertirla en fortaleza.","Éter 12:26–28 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/ether/12?lang=spa&id=p26-p28#p26"),
+            scripture("Alma 11:42–45","El cuerpo y el espíritu serán reunidos",`[42] Ahora bien, hay una muerte que se llama la muerte temporal; y la muerte de Cristo desatará las ligaduras de esta muerte temporal, de modo que todos se levantarán de esta muerte.
+[43] El espíritu y el cuerpo serán reunidos otra vez en su perfecta forma; los miembros así como las coyunturas serán restaurados a su propia forma, tal como nos hallamos ahora; y seremos llevados ante Dios, conociendo tal como ahora conocemos, y tendremos un vivo recuerdo de toda nuestra culpa.
+[44] Pues bien, esta restauración vendrá sobre todos, tanto viejos como jóvenes, esclavos así como libres, varones así como mujeres, malvados así como justos; y no se perderá ni un solo pelo de su cabeza, sino que todo será restablecido a su perfecta forma, o en el cuerpo, cual se encuentra ahora, y serán llevados a comparecer ante el tribunal de Cristo el Hijo, y Dios el Padre, y el Santo Espíritu, que son un Eterno Dios, para ser juzgados según sus obras, sean buenas o malas.
+[45] Ahora bien, he aquí, te he hablado concerniente a la muerte del cuerpo mortal y también acerca de la resurrección del cuerpo mortal. Te digo que este cuerpo mortal se levanta como cuerpo inmortal, es decir, de la muerte, sí, de la primera muerte a vida, de modo que no pueden morir ya más; sus espíritus se unirán a sus cuerpos para no ser separados nunca más; por lo que esta unión se torna espiritual e inmortal, para no volver a ver corrupción.`,"La Resurrección por Cristo alcanza a todos y restaura el cuerpo perfectamente.","Alma 11:42–45 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/11?lang=spa&id=p42-p45#p42"),
+            scripture("3 Nefi 9:13–14","Volveos para que Yo os sane",`[13] ¡Oh vosotros, todos los que habéis sido preservados porque fuisteis más justos que ellos!, ¿no os volveréis a mí ahora, y os arrepentiréis de vuestros pecados, y os convertiréis para que yo os sane?
+[14] Sí, en verdad os digo que si venís a mí, tendréis vida eterna. He aquí, mi brazo de misericordia se extiende hacia vosotros; y a cualquiera que venga, yo lo recibiré; y benditos son los que vienen a mí.`,"Jesucristo une arrepentimiento, conversión, sanación y vida eterna.","3 Nefi 9:13–14 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/9?lang=spa&id=p13-p14#p13"),
+            scripture("Alma 36:17–21","Cristo convirtió dolor en gozo",`[17] Y aconteció que mientras así me agobiaba este tormento, mientras me atribulaba el recuerdo de mis muchos pecados, he aquí, también me acordé de haber oído a mi padre profetizar al pueblo concerniente a la venida de un Jesucristo, un Hijo de Dios, para expiar los pecados del mundo.
+[18] Y al concentrarse mi mente en este pensamiento, clamé dentro de mi corazón: ¡Oh Jesús, Hijo de Dios, ten misericordia de mí que estoy en la hiel de amargura, y ceñido con las eternas cadenas de la muerte!
+[19] Y he aquí que cuando pensé esto, ya no me pude acordar más de mis dolores; sí, dejó de atormentarme el recuerdo de mis pecados.
+[20] Y, ¡oh qué gozo, y qué luz tan maravillosa fue la que vi! Sí, mi alma se llenó de un gozo tan profundo como lo había sido mi dolor.
+[21] Sí, hijo mío, te digo que no podía haber cosa tan intensa ni tan amarga como mis dolores. Sí, hijo mío, y también te digo que por otra parte no puede haber cosa tan intensa y dulce como lo fue mi gozo.`,"La esperanza tiene un centro: Jesucristo y Su poder para redimir.","Alma 36:17–21 · Libro de Mormón","https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/36?lang=spa&id=p17-p21#p17")
+          ],
+          quotes:[
+            quote("Presidente Uchtdorf · 2020","Dios hará algo inimaginable",`En cierto modo, somos semillas; y para que las semillas alcancen su potencial, deben enterrarse antes de que puedan brotar. Soy testigo de que, aunque a veces nos sintamos sepultados por las pruebas de la vida o rodeados de tinieblas emocionales, el amor de Dios y las bendiciones del evangelio restaurado de Jesucristo harán que surja algo inimaginable.
+
+Cada dispensación ha enfrentado sus épocas de pruebas y dificultades.`,"La tierra enterrada no parece viva, pero Dios ya puede estar preparando crecimiento.","Dieter F. Uchtdorf · “Dios hará algo inimaginable” · Octubre de 2020",URLS.unimaginable),
+            quote("Amy A. Wright · 2022","Cristo sana lo que está roto",`Mis queridos amigos, todos tenemos algo en nuestra vida que está roto y que necesita ser reparado, arreglado o sanado. Cuando acudimos al Salvador, cuando alineamos nuestro corazón y nuestra mente con Él, cuando nos arrepentimos, Él viene a nosotros “con sanidad en sus alas”, nos rodea con Sus brazos amorosos y nos dice: “No te preocupes; solo tienes 5 años, o 16, 23, 48, 64 o 91. ¡Podemos arreglar esto juntos!”.
+
+Les testifico que no hay nada roto en su vida que se encuentre fuera del alcance del poder curativo, redentor y habilitador de Jesucristo.`,"Nada roto queda fuera del poder de Jesucristo para sanar y restaurar.","Amy A. Wright · “Cristo sana lo que está roto” · Abril de 2022",URLS.broken),
+            quote("Élder Holland · 2013","El don de la Santa Resurrección",`Testifico de la Santa Resurrección, ¡ese don inefable que es la piedra clave de la expiación del Señor Jesucristo! Junto con el apóstol Pablo, testifico que aquello que se sembró en corrupción algún día resucitará en incorrupción y que lo que se sembró en debilidad al final resucitará en poder. Testifico del día en que nuestros seres queridos que sufrían discapacidades en la vida terrenal se presentarán ante nosotros glorificados y grandiosos, asombrosamente perfectos en cuerpo y mente. ¡Qué momento maravilloso será! No sé si sentiremos mayor felicidad por ser testigos de tal milagro o porque ellos serán totalmente perfectos y “libres al fin”.`,"Este testimonio confirma el cumplimiento literal de los huesos secos.","Jeffrey R. Holland · “Como una vasija quebrada” · Octubre de 2013",URLS.vessel),
+            quote("Élder Renlund · 2018","El río renovaba todo lo que tocaba",`Hay dos características destacables de esta agua. En primer lugar, aunque el pequeño arroyo no tenía afluentes, crecía hasta convertirse en un río caudaloso, ensanchándose y haciéndose más profundo según recorría su flujo. Sucede algo similar con las bendiciones que fluyen del templo a medida que las personas son selladas como familias. A medida que las ordenanzas de sellamiento fusionan las familias, se produce un crecimiento significativo hacia atrás y hacia delante a través de las generaciones.
+
+En segundo lugar, el río renovaba todo lo que tocaba. Del mismo modo, las bendiciones del templo tienen una capacidad impresionante para sanar. Las bendiciones del templo pueden sanar corazones, vidas y familias.`,"Renlund interpreta la visión como bendiciones del templo que crecen y sanan.","Dale G. Renlund · “La obra del templo y de historia familiar: Sellamiento y sanación” · Abril de 2018",URLS.healing),
+            quote("Presidente Nelson · Jesucristo","La respuesta siempre es Jesucristo",`Queridos hermanos y hermanas, Jesucristo les extiende esa misma invitación hoy. ¡Les ruego que vengan a Él para que Él pueda sanarlos a ustedes! Él los sanará del pecado, conforme se arrepientan; los sanará de la tristeza y del miedo; los sanará de las heridas de este mundo.
+
+Sean cuales sean las preguntas o los problemas que tengan, la respuesta siempre se halla en la vida y las enseñanzas de Jesucristo. Aprendan más sobre Su expiación, Su amor, Su misericordia, Su doctrina y Su evangelio restaurado de sanación y progreso. ¡Acudan a Él! ¡Síganlo!`,"El Sanador de Israel invita a cada persona a volver y recibir vida.","Russell M. Nelson · “La respuesta siempre es Jesucristo” · Abril de 2023",URLS.christ)
+          ]
+        }
+      ];
+      const extraQuotes=[
+        quote("Élder Walker · 2026","Ligados en unión con Dios",`El presidente Russell M. Nelson enseñó: “Una vez que ustedes y yo hemos hecho un convenio con Dios, nuestra relación con Él se vuelve mucho más estrecha que antes del convenio. Ahora estamos ligados en unión. Debido a nuestro convenio con Dios, Él jamás cejará en Sus esfuerzos por ayudarnos, y nunca agotaremos Su misericordiosa paciencia para con nosotros. Cada uno de nosotros tiene un lugar especial en el corazón de Dios. Él tiene grandes esperanzas en cuanto a nosotros”. El mismo Dios que llamó a los hijos de Israel nos llama ahora; nos llama a llegar a ser Su pueblo del convenio, a elevarnos por encima de las conductas del mundo y a recibir bendiciones que solo Él puede conferir.`,"El convenio define el valor de Ezequiel mejor que cualquier cargo perdido.","Alan R. Walker · “Mi especial tesoro” · Abril de 2026","https://www.churchofjesuschrist.org/study/general-conference/2026/04/48walker?lang=spa"),
+        quote("Presidente Nelson · 2018","Pregunten, escuchen y actúen",`Del mismo modo, ¿a qué dará comienzo la búsqueda de ustedes? ¿De qué sabiduría carecen? ¿Qué necesidad sienten que les es urgente saber o comprender? Sigan el ejemplo del profeta José; encuentren un lugar tranquilo a donde puedan ir con regularidad; humíllense ante Dios; derramen su corazón a su Padre Celestial; acudan a Él para recibir respuestas y consuelo.
+
+Oren en el nombre de Jesucristo acerca de sus preocupaciones, sus temores, sus debilidades, sí, los anhelos mismos de su corazón. ¡Y luego, escuchen! Anoten las ideas que acudan a su mente; escriban sus sentimientos y denles seguimiento con las acciones que se les indique tomar.`,"Los cielos abiertos invitan a preguntar, escuchar y actuar.","Russell M. Nelson · “Revelación para la Iglesia, revelación para nuestras vidas” · Abril de 2018","https://www.churchofjesuschrist.org/study/general-conference/2018/04/revelation-for-the-church-revelation-for-our-lives?lang=spa"),
+        quote("David M. McConkie · 2010","Es natural sentirse inadecuado",`Es natural que los maestros se sientan inadecuados. Ustedes deben entender que “la edad, la madurez y la formación intelectual no son de ninguna manera ni en ningún grado necesarios para la comunión con el Señor y su Espíritu”. Las promesas del Señor son ciertas. Si ustedes sinceramente escudriñan las Escrituras y atesoran en su mente las palabras de vida, si guardan los mandamientos con todo su corazón y oran por cada alumno, gozarán de la compañía del Espíritu Santo y recibirán revelación.`,"El Espíritu puede levantar a quien todavía se siente insuficiente.","David M. McConkie · “El aprendizaje y la enseñanza del Evangelio” · Octubre de 2010","https://www.churchofjesuschrist.org/study/general-conference/2010/10/gospel-learning-and-teaching?lang=spa"),
+        quote("Élder Andersen · 1993","El Señor fortalece durante el servicio",`He escuchado al presidente Monson decir que “cuando el Señor llama, el Señor capacita”. Yo se que eso es verdad y me da la esperanza de que he de superar las insuficiencias que yo pueda tener. No me cabe la menor duda de que cuando estamos en el servicio del Señor, El estará con nosotros, nos fortalecerá y nos capacitará. Se que esto es verdad porque lo he experimentado; he sentido la presencia de Su Espíritu reconfortándome. Estoy seguro de que en los meses y los años que se avecindan voy a necesitarlo muchísimo.`,"El Señor dio a Ezequiel fuerza mientras cumplía su llamamiento.","Neil L. Andersen · Abril de 1993","https://www.churchofjesuschrist.org/study/general-conference/1993/04/whom-the-lord-calls-the-lord-qualifies?lang=spa"),
+        quote("Presidente Eyring · abril 2017","Una obra entre cielos y tierra",`Hay muchas personas ahora que han aceptado el bautismo en el mundo de los espíritus gracias a la labor que los jóvenes han realizado y están esperando otras ordenanzas que solo los adultos pueden efectuar en los templos en este mundo. La obra de congregar a la familia del Padre Celestial no es solo para los jóvenes, ni tampoco solo para los abuelos. Es para todos; todos somos congregadores.`,"La obra de Dios continúa a ambos lados del velo.","Henry B. Eyring · “Congregar a la familia de Dios” · Abril de 2017","https://www.churchofjesuschrist.org/study/general-conference/2017/04/gathering-the-family-of-god?lang=spa"),
+        quote("Presidente Hinckley · 2004","Servir a quienes están más allá del velo",`Constantemente nos invade el factor del egoísmo, el cual debemos vencer, y no hay mejor manera de hacerlo que ir a la casa del Señor a prestar servicio en una relación vicaria en beneficio de aquellos que están más allá del velo de la muerte. Eso es algo extraordinario. En la mayoría de los casos, no conocemos a las personas por quienes efectuamos la obra. No esperamos que nos den las gracias y no tenemos la seguridad de que aceptarán lo que les ofrecemos, pero, no obstante, vamos, y en ese proceso, alcanzamos un nivel que no se logra con ningún otro esfuerzo.`,"El servicio eterno requiere obreros fieles en la tierra.","Gordon B. Hinckley · “Comentarios finales” · Octubre de 2004","https://www.churchofjesuschrist.org/study/general-conference/2004/10/closing-remarks?lang=spa"),
+        quote("Élder Soares · 2018","Tener profetas muestra el amor de Dios",`¿No es una bendición que tengamos profetas, videntes y reveladores sobre la tierra en estos días; hombres que procuran conocer la voluntad del Señor y seguirla? Es reconfortante saber que no estamos solos en el mundo, a pesar de los desafíos que afrontamos en la vida. Tener profetas es una señal del amor de Dios por Sus hijos. Ellos hacen saber las promesas y la verdadera naturaleza de Dios y de Jesucristo a Su pueblo. He aprendido eso por medio de mis experiencias personales.`,"La voz del atalaya es una señal del amor de Dios.","Ulisses Soares · “Los profetas hablan por el poder del Santo Espíritu” · Abril de 2018","https://www.churchofjesuschrist.org/study/general-conference/2018/04/prophets-speak-by-the-power-of-the-holy-spirit?lang=spa"),
+        quote("Élder Kearon · 2024","El Salvador no rechaza al penitente",`Él no desechó a la mujer con flujo de sangre, Él no retrocedió ante el leproso, Él no rechazó a la mujer sorprendida en adulterio, Él no se negó al penitente, sin importar su pecado. Y Él no los rechazará a ustedes ni a sus seres queridos cuando lleven a Él su corazón quebrantado y su espíritu contrito. Esa no es Su intención ni Su designio, ni Su plan, propósito, deseo o esperanza.`,"Jehová pide volver porque desea recibir y sanar al penitente.","Patrick Kearon · “La intención de Dios es llevarlos a casa” · Abril de 2024","https://www.churchofjesuschrist.org/study/general-conference/2024/04/45kearon?lang=spa"),
+        quote("Élder Bednar · 2012","La conversión debe continuar",`Para muchos de nosotros, la conversión es un proceso constante y no un solo acontecimiento que resulta de una experiencia poderosa o dramática. Línea por línea y precepto por precepto, de manera gradual y casi imperceptible, nuestras intenciones, nuestros pensamientos, nuestras palabras y acciones entran en sintonía con la voluntad de Dios. La conversión al Señor requiere tanto perseverancia como paciencia.
+
+Samuel el lamanita señaló cinco elementos básicos para convertirse al Señor: (1) creer en las enseñanzas y profecías de los santos profetas como están registradas en las Escrituras; (2) ejercitar fe en el Señor Jesucristo; (3) arrepentirse; (4) experimentar un potente cambio de corazón; y (5) llegar a ser “firmes e inmutables en la fe” (véase Helamán 15:7–8). Ése es el modelo que conduce a la conversión.`,"La rectitud pasada no sustituye una conversión que sigue creciendo.","David A. Bednar · “Convertidos al Señor” · Octubre de 2012","https://www.churchofjesuschrist.org/study/general-conference/2012/10/converted-unto-the-lord?lang=spa"),
+        quote("Élder Andersen · 2025","El milagro del perdón espera",`Si han cometido pecados graves y están en el proceso de arrepentirse, o tienen el deseo de arrepentirse por completo y sentir el gozo inefable del perdón, sepan que ese milagro los espera. El Salvador continuamente invita: “Venid a mí”.
+
+Fortalecer su fe en nuestro Salvador, Jesucristo, vigorizará el anhelo del alma de conocerlo, creer en Él y entregarle el corazón. Enós preguntó sobre su propio perdón: “Señor, ¿cómo se lleva esto a efecto?”. El Señor respondió: “Por tu fe en Cristo, a quien nunca jamás has oído ni visto”.
+
+Moroni agregó: “Si os abstenéis de toda impiedad, y amáis a Dios con todo vuestro poder, mente y fuerza, entonces su gracia os es suficiente”.`,"El pecado pasado no cierra el milagro presente del perdón.","Neil L. Andersen · “El amor expiatorio de Jesucristo” · Octubre de 2025","https://www.churchofjesuschrist.org/study/general-conference/2025/10/35andersen?lang=spa"),
+        quote("Presidente Monson · 2013","Obedecer trae verdad y luz",`El conocimiento que buscamos, las respuestas que añoramos, y la fortaleza que deseamos hoy día para hacer frente a los desafíos de un mundo complejo y cambiante pueden ser nuestras si de buena gana obedecemos los mandamientos del Señor. De nuevo cito las palabras del Señor: “El que guarda los mandamientos [de Dios] recibe verdad y luz, hasta que es glorificado en la verdad y sabe todas las cosas”.`,"Escuchar la palabra del Señor debe convertirse en obediencia.","Thomas S. Monson · “La obediencia trae bendiciones” · Abril de 2013","https://www.churchofjesuschrist.org/study/general-conference/2013/04/obedience-brings-blessings?lang=spa"),
+        quote("Presidente Eyring · octubre 2017","Aceptar el consejo inspirado",`Teniendo ese testimonio, he leído el Libro de Mormón todos los días durante más de 50 años, por lo que hubiera sido razonable pensar que las palabras del presidente Monson iban dirigidas a otra persona. Sin embargo, al igual que muchos de ustedes, sentí que la exhortación y la promesa del profeta me invitaban a hacer un esfuerzo mayor. Muchos de ustedes han hecho lo que hice yo: orar con mayor intención, meditar en las Escrituras más intensamente y esforzarse más por servir al Señor y a otras personas por Él.`,"Eyring muestra la diferencia entre oír y responder al profeta.","Henry B. Eyring · “No tengáis miedo de hacer lo bueno” · Octubre de 2017","https://www.churchofjesuschrist.org/study/general-conference/2017/10/fear-not-to-do-good?lang=spa"),
+        quote("Élder Viñas · 2015","La palabra sana el alma herida",`Muchos de los que nos hemos reunido para participar en esta conferencia hemos venido “para oír la agradable palabra de Dios; sí, la palabra que sana el alma herida” (Jacob 2:8). Esa palabra se puede encontrar en las Escrituras y en los mensajes de nuestros líderes, trayéndonos esperanza y consuelo en las tinieblas de la aflicción.
+
+A lo largo de la vida, aprendemos que el gozo en este mundo no es completo, pero en Jesucristo se cumple nuestro gozo (véase D. y C. 101:36). Él nos dará fortaleza a fin de que no tengamos que padecer ningún género de aflicciones que no sean consumidas en Su gozo (véase Alma 31:38).`,"La palabra de Cristo puede fortalecer, curar y consolar al débil.","Francisco J. Viñas · “La agradable palabra de Dios” · Octubre de 2015","https://www.churchofjesuschrist.org/study/general-conference/2015/10/the-pleasing-word-of-god?lang=spa"),
+        quote("Presidente Nelson · Pacificadores","Los discípulos edifican y elevan",`Mis queridos hermanos y hermanas, esto no debe ocurrir. Como discípulos de Jesucristo, debemos ser ejemplos de cómo interactuar con los demás, especialmente cuando tenemos diferencias de opinión. Una de las maneras más sencillas de reconocer a un verdadero seguidor de Jesucristo es fijarse en qué medida trata a los demás con compasión.
+
+El mensaje del Salvador es claro: Sus verdaderos discípulos edifican, elevan, alientan, persuaden e inspiran, por muy difícil que sea la situación. Los verdaderos discípulos de Jesucristo son pacificadores.`,"Las ovejas fuertes deben edificar, no empujar ni herir.","Russell M. Nelson · “Se necesitan pacificadores” · Abril de 2023","https://www.churchofjesuschrist.org/study/general-conference/2023/04/47nelson?lang=spa"),
+        quote("Élder Renlund · 2020","Jesucristo eleva en vez de condenar",`Jesucristo ejemplificó lo que significa hacer justicia y amar la misericordia. Se relacionó abiertamente con los pecadores, tratándolos de manera honorable y con respeto; enseñó el gozo de guardar los mandamientos de Dios y procuró elevar en vez de condenar a quienes tenían dificultades. Acusó a los que lo culpaban por ministrar a personas que aquellos consideraban indignas. Tal arrogancia lo ofendió y todavía lo hace.
+
+Para ser semejante a Cristo, la persona actúa de manera justa, comportándose de manera honorable tanto con Dios como con otras personas. La persona justa es cortés en palabra y en hecho, y reconoce que las diferencias de opinión o creencia no impiden la bondad ni la amistad genuinas.`,"Cristo muestra cómo tratar con justicia a las ovejas débiles.","Dale G. Renlund · “Haz justicia, ama la misericordia y humíllate para andar con Dios” · Octubre de 2020","https://www.churchofjesuschrist.org/study/general-conference/2020/10/55renlund?lang=spa"),
+        quote("Presidente Uchtdorf · 2016","El Buen Pastor conoce y rescata",`Nuestro Salvador, el Buen Pastor, nos conoce y nos ama. Él los conoce y los ama.
+
+Él sabe cuándo están perdidos y Él sabe dónde están. Él conoce su dolor, sus súplicas en silencio, sus temores, sus lágrimas.
+
+No importa cómo se hayan perdido, ya sea debido a sus propias malas elecciones o debido a circunstancias más allá de su control.
+
+Lo que importa es que ustedes son Sus hijos y Él los ama. Él ama a Sus hijos.
+
+Debido a que Él los ama, Él los encontrará. Él los pondrá sobre Sus hombros, regocijándose; y cuando los traiga a casa, les dirá a todos: “Alegraos conmigo, porque he hallado mi oveja que se había perdido”.`,"Este es el Pastor prometido por Ezequiel: conoce, busca y rescata.","Dieter F. Uchtdorf · “Él los colocará en Sus hombros y los llevará a casa” · Abril de 2016","https://www.churchofjesuschrist.org/study/general-conference/2016/04/he-will-place-you-on-his-shoulders-and-carry-you-home?lang=spa"),
+        quote("Élder Gong · 2023","Ayuden al Buen Pastor",`Consejos de barrio, cuórums de élderes y Sociedades de Socorro, por favor, escuchen al Buen Pastor y ayúdenlo a buscar a la oveja perdida, a hacer volver a la descarriada, a vendar a la perniquebrada y a fortalecer a la débil. Tal vez hospedemos, “sin saberlo […], ángeles”, cuando hagamos lugar para todos en Su mesón.
+
+La ministración inspirada bendice a las familias y a las personas; y también fortalece a los barrios y a las ramas. Piensen en su barrio o rama como un ecosistema espiritual.`,"Gong aplica directamente Ezequiel 34 a la ministración actual.","Gerrit W. Gong · “La ministración” · Abril de 2023","https://www.churchofjesuschrist.org/study/general-conference/2023/04/14gong?lang=spa"),
+        quote("Presidente Nelson · octubre 2022","El Salvador cambia el corazón",`Ahora bien, vencer al mundo ciertamente no significa llegar a ser perfectos en esta vida, ni significa que sus problemas se esfumarán como por arte de magia, porque no lo harán. Y no significa que no seguirán cometiendo errores. Sin embargo, vencer al mundo sí significa que la resistencia de ustedes al pecado aumentará. Su corazón se ablandará a medida que su fe en Jesucristo aumente. Vencer al mundo significa llegar a amar a Dios y a Su Hijo Amado más que a cualquier otra persona o cosa.`,"El corazón de piedra se ablanda mediante Cristo y el Espíritu.","Russell M. Nelson · “Vencer al mundo y hallar descanso” · Octubre de 2022","https://www.churchofjesuschrist.org/study/general-conference/2022/10/47nelson?lang=spa"),
+        quote("Hermana Craig · 2022","Devoción de todo corazón",`Cuando llegan los momentos difíciles, trato de recordar que elegí seguir a Cristo antes de venir a la tierra y que los desafíos a mi fe, mi salud y mi perseverancia son parte de la razón por la que estoy aquí. Además, nunca debo pensar que la prueba del día de hoy pone en tela de juicio el amor que Dios siente por mí, ni debo dejar que transforme mi fe en Él en una duda. Las pruebas no significan que el plan esté fracasando; son parte del plan y tienen el propósito de ayudarme a buscar a Dios. Llego a ser más semejante a Él cuando persevero con paciencia y, espero que, como Él, cuando esté sumida en la agonía, ore con más fervor.`,"Un corazón nuevo sigue a Cristo de todo corazón durante las pruebas.","Michelle D. Craig · “Con todo nuestro corazón” · Octubre de 2022","https://www.churchofjesuschrist.org/study/general-conference/2022/10/32craig?lang=spa"),
+        quote("Élder Gong · 2024","La fe actúa antes de ver el resultado",`Al poner nuestra confianza y fe en Dios, las pruebas y aflicciones pueden ser consagradas para nuestro bien. José, quien fue vendido como esclavo en Egipto, más adelante salvó a su familia y a su pueblo. El encarcelamiento del profeta José Smith en la cárcel de Liberty le enseñó: “Estas cosas te servirán de experiencia, y serán para tu bien”. Cuando se sobrellevan con fe, las pruebas y los sacrificios que jamás elegiríamos pueden bendecirnos a nosotros y a otras personas de maneras que nunca habríamos imaginado.`,"La fe puede trabajar sobre una tierra que todavía parece desolada.","Gerrit W. Gong · “Todas las cosas para nuestro bien” · Abril de 2024","https://www.churchofjesuschrist.org/study/general-conference/2024/04/25gong?lang=spa"),
+        quote("Élder Holland · 1999","Cristo promete bienes venideros",`Hay ciertos momentos en que todos tenemos la necesidad de saber que las cosas mejorarán. Moroni se refirió a ello en el Libro de Mormón como la “esperanza de un mundo mejor”. Por nuestra propia salud emocional y por nuestro propio vigor espiritual todos debemos estar en condiciones de mirar hacia el futuro a cierto grado de alivio, hacia algo agradable, renovador y optimista, ya sea que se trate de una bendición que esté al alcance de la mano o aún distante. Nos basta con saber que podemos llegar allí, que no importa cuán próximo o lejano esté, existe la promesa de “bienes venideros”.
+
+Yo declaro que eso es precisamente lo que el Evangelio de Jesucristo nos ofrece, particularmente en momentos de necesidad.`,"Cristo ofrece un futuro vivo cuando el valle aún parece muerto.","Jeffrey R. Holland · “Sumo sacerdote de los bienes venideros” · Octubre de 1999","https://www.churchofjesuschrist.org/study/general-conference/1999/10/an-high-priest-of-good-things-to-come?lang=spa"),
+        quote("Élder Ballard · 1992","Siempre hay esperanza",`La esperanza es un principio hermoso por el cual vivir; sin embargo, entre nosotros hay quienes la han perdido completamente debido al pecado y a la transgresión. Una persona puede dejarse absorber tanto por las vías del mundo que no ve la salida y pierde la esperanza. Mi ruego a todos los que hayan caído en esta trampa del adversario es que nunca se rindan. No obstante lo desesperada que parezca la situación o cuanto empeore, ruego que me crean: siempre hay esperanza. Siempre.`,"La declaración responde directamente: nuestra esperanza no tiene que perecer.","M. Russell Ballard · “El gozo de la esperanza hecha realidad” · Octubre de 1992","https://www.churchofjesuschrist.org/study/general-conference/1992/10/the-joy-of-hope-fulfilled?lang=spa"),
+        quote("Élder Rasband · 2023","La Resurrección culminó la semana decisiva",`Como ya se ha dicho, hoy nos sumamos a cristianos de todo el mundo para honrar a Jesucristo en este Domingo de Ramos. Hace casi dos mil años, el Domingo de Ramos marcó el inicio de la última semana del ministerio terrenal de Jesucristo; fue la semana más importante de la historia de la humanidad.
+
+Lo que comenzó con la entrada triunfal de Jesús en Jerusalén, en la que fue aclamado como el Mesías prometido, culminó con Su crucifixión y resurrección. Por designio divino, Su sacrificio expiatorio dio fin a Su ministerio terrenal, haciendo posible que vivamos con nuestro Padre Celestial por la eternidad.`,"La Resurrección de Jesucristo hace posible nuestra vida eterna.","Ronald A. Rasband · “Hosanna al Más Alto Dios” · Abril de 2023","https://www.churchofjesuschrist.org/study/general-conference/2023/04/53rasband?lang=spa"),
+        quote("Presidente Nelson · 2006","El recogimiento ya comenzó",`Esta doctrina del recogimiento es una de las enseñanzas importantes de La Iglesia de Jesucristo de los Santos de los Últimos Días. El Señor ha dicho: “…os doy una señal… que recogeré a mi pueblo de su larga dispersión, oh casa de Israel, y estableceré otra vez entre ellos mi Sión”. La salida a luz del Libro de Mormón es una señal para el mundo entero de que el Señor ha comenzado a recoger a Israel y a cumplir los convenios que hizo con Abraham, con Isaac y con Jacob. No sólo enseñamos esta doctrina, sino que tomamos parte en ella. Lo hacemos al ayudar a congregar a los escogidos del Señor en los dos lados del velo.`,"Los dos palos participan en reunir un pueblo bajo Cristo.","Russell M. Nelson · “El recogimiento del Israel disperso” · Octubre de 2006","https://www.churchofjesuschrist.org/study/general-conference/2006/10/the-gathering-of-scattered-israel?lang=spa"),
+        quote("Élder Renlund · 2023","Los convenios nos unen a Dios",`Antes de que se creara la tierra, Dios estableció convenios como el mecanismo mediante el cual nosotros, Sus hijos, podríamos unirnos a Él. Con base en una ley eterna e inmutable, Él especificó las condiciones innegociables por las cuales somos transformados, salvados y exaltados. En esta vida, hacemos dichos convenios al participar en ordenanzas del sacerdocio y prometer que haremos lo que Dios nos pida hacer y, a cambio, Dios nos promete ciertas bendiciones.
+
+Un convenio es un compromiso para el cual debemos prepararnos, que debemos comprender claramente y honrar absolutamente. Hacer un convenio con Dios es diferente de hacer una promesa a la ligera. Primero, se requiere la autoridad del sacerdocio.`,"El río del templo fluye mediante convenios y ordenanzas autorizadas.","Dale G. Renlund · “Cómo acceder al poder de Dios a través de los convenios” · Abril de 2023","https://www.churchofjesuschrist.org/study/general-conference/2023/04/23renlund?lang=spa")
+      ];
+      const sourceIndex=new Map([
+        ...parts.flatMap(part=>[
+          ...part.topics.flatMap(topic=>topic.refs),
+          ...part.supports,
+          ...part.quotes
+        ]),
+        ...extraQuotes
+      ].map(item=>[item.label,item]));
+      const slidePlans=[
+        [
+          ["Ezequiel 1:1–3","Presidente Nelson · mayo 2022","Mosíah 5:7–9","Élder Walker · 2026","DyC 138:43, 51–52"],
+          ["Ezequiel 1:26–28","Presidente Uchtdorf · 2011","Ezequiel 1:1–3","Presidente Nelson · 2018","3 Nefi 9:13–14"],
+          ["Ezequiel 2:1–7","Presidente Uchtdorf · 2008","Mosíah 5:2–9","David M. McConkie · 2010","Éter 12:26–28"],
+          ["Ezequiel 3:8–15","Élder Stevenson · 2020","Éter 12:26–28","Élder Andersen · 1993","Alma 36:17–21"],
+          ["DyC 138:43, 51–52","Presidente Eyring · abril 2017","Mosíah 5:7–9","Presidente Hinckley · 2004","Ezequiel 37:12–14"]
+        ],
+        [
+          ["Ezequiel 3:16–21","Élder Christofferson · 2017","Ezequiel 33:1–9","Élder Soares · 2018","Alma 5:37–41","Alma 34:32–35"],
+          ["Ezequiel 33:10–11","Presidente Nelson · 2019","3 Nefi 9:13–14","Élder Kearon · 2024","Alma 36:17–21"],
+          ["Ezequiel 33:12–20","Élder Bednar · 2012","Alma 5:26–28","Élder Andersen · 2025","Alma 34:32–35","Helamán 12:1–6"],
+          ["Ezequiel 33:30–33","Presidente Monson · 2013","Helamán 12:1–6","Presidente Eyring · octubre 2017","Alma 5:26–28"],
+          ["Ezequiel 34:1–10","Élder Caussé · 2018","2 Nefi 26:29–31","Presidente Uchtdorf · 2015","Mosíah 18:8–10"],
+          ["Ezequiel 34:4–6","Élder Holland · 2018","Mosíah 18:8–10","Élder Viñas · 2015","Ezequiel 34:11–16, 23–31","Alma 5:37–41"],
+          ["Ezequiel 34:17–22","Presidente Nelson · Pacificadores","Mosíah 18:8–10","Élder Renlund · 2020","2 Nefi 26:29–31"],
+          ["Ezequiel 34:11–16, 23–31","Presidente Uchtdorf · 2016","Alma 5:37–41","Élder Gong · 2023","Mosíah 18:8–10","3 Nefi 9:13–14"]
+        ],
+        [
+          ["Ezequiel 36:24–32","Presidente Nelson · octubre 2022","Mosíah 5:2–9","Hermana Craig · 2022","3 Nefi 9:13–14","Alma 36:17–21"],
+          ["Ezequiel 36:33–36","Presidente Uchtdorf · 2020","Éter 12:26–28","Élder Gong · 2024","Ezequiel 47:1–12"],
+          ["Ezequiel 37:1–10","Amy A. Wright · 2022","Alma 11:42–45","Élder Holland · 1999","Ezequiel 37:11–14","Éter 12:26–28"],
+          ["Ezequiel 37:11–14","Presidente Nelson · Jesucristo","Alma 36:17–21","Élder Ballard · 1992","3 Nefi 9:13–14"],
+          ["Ezequiel 37:12–14","Élder Holland · 2013","Alma 11:42–45","Élder Rasband · 2023","DyC 138:43, 51–52"],
+          ["Ezequiel 37:15–28","Presidente Nelson · 2020","Mosíah 5:7–9","Presidente Nelson · 2006","Mosíah 5:2–9","Ezequiel 34:11–16, 23–31"],
+          ["Ezequiel 47:1–12","Élder Renlund · 2018","3 Nefi 9:13–14","Élder Renlund · 2023","Ezequiel 36:33–36","Alma 36:17–21"]
+        ]
+      ];
+      let sequence=0;
+      const slidesData=parts.flatMap((part,partIndex)=>part.topics.map((topic,topicIndex)=>{
+        const labels=slidePlans[partIndex][topicIndex];
+        const sources=labels.map(label=>sourceIndex.get(label));
+        sequence+=1;
+        return {
+          ...topic,
+          id:`tema-${sequence}`,
+          sequence,
+          partIndex,
+          topicIndex,
+          partTotal:part.topics.length,
+          eyebrow:part.eyebrow,
+          frameNote:part.lensNote,
+          sources,
+          nameTitle:partIndex===0&&topicIndex===0?part.nameTitle:null,
+          nameText:partIndex===0&&topicIndex===0?part.nameText:null,
+          nameLinks:partIndex===0&&topicIndex===0?part.nameLinks:null
+        };
+      }));
+      const plannedLabels=new Set(slidePlans.flat(2));
+      const plannedQuotes=slidesData.flatMap(slide=>slide.sources.filter(source=>source?.kind==="Cita moderna"));
+      const uniqueQuoteUrls=new Set(plannedQuotes.map(item=>item.url));
+      if(slidesData.length!==20||slidesData.some(slide=>slide.sources.length<5||slide.sources.some(source=>!source))||plannedLabels.size!==sourceIndex.size||plannedQuotes.length!==40||uniqueQuoteUrls.size!==40||slidesData.some(slide=>slide.sources.filter(source=>source.kind==="Cita moderna").length!==2))throw new Error("Falta una fuente o se repite una cita en el plan de diapositivas.");
+      const esc=value=>String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"})[char]);
+      const reading=item=>`<details class="reading"><summary><span class="reading-summary"><strong>${esc(item.label)}</strong><small>${esc(item.title)}</small></span><span class="reading-plus" aria-hidden="true"></span></summary><div class="reading-body" tabindex="0"><blockquote>${esc(item.excerpt)}</blockquote><p class="reading-context">${esc(item.context)}</p><p class="reading-source">${esc(item.source)}</p><a class="official-link" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">Leer fuente oficial</a></div></details>`;
+      const historyCard=slide=>slide.nameTitle?`<aside class="name-card"><strong>${esc(slide.nameTitle)}</strong><p>${esc(slide.nameText)}</p><p>Fuentes: ${slide.nameLinks.map(link=>`<a href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${esc(link.label)}</a>`).join(" · ")}</p></aside>`:"";
+      const presentation=document.getElementById("presentation");
+      const controls=presentation.querySelector(".controls");
+      const slideMarkup=slidesData.map(slide=>`<section class="slide story-slide" id="${esc(slide.id)}" data-title="${esc(slide.title)}" aria-hidden="false"><div class="story-layout"><div class="story-copy"><p class="eyebrow">${esc(slide.eyebrow)}</p><span class="topic-order">Subpunto ${slide.topicIndex+1} de ${slide.partTotal}</span><h2>${esc(slide.title)}</h2><p class="story-lead">${esc(slide.text)}</p><p class="frame-note">${esc(slide.frameNote)}</p>${historyCard(slide)}<p class="story-question">${esc(slide.question)}</p></div><article class="source-card">${slide.sources.map(reading).join("")}${slide.note?`<aside class="doctrine-note"><strong>${esc(slide.note.title)}</strong>${esc(slide.note.text)} <a href="${esc(slide.note.url)}" target="_blank" rel="noopener noreferrer">${esc(slide.note.label)}</a>.</aside>`:""}</article></div></section>`).join("");
+      controls.insertAdjacentHTML("beforebegin",slideMarkup);
+      const slides=[...document.querySelectorAll(".slide")];
+      const previousButton=document.getElementById("previous");
+      const nextButton=document.getElementById("next");
+      const fullscreenButton=document.getElementById("fullscreen");
+      const counter=document.getElementById("counter");
+      const progress=document.getElementById("progress");
+      let current=0,scrollFrame=null;
+      function updateControls(){
+        previousButton.disabled=current===0;
+        nextButton.disabled=current===slides.length-1;
+        counter.textContent=`${current+1} / ${slides.length}`;
+        progress.style.width=`${((current+1)/slides.length)*100}%`;
+        document.title=`${slides[current].dataset.title} — Pondré un espíritu nuevo dentro de vosotros`;
+        if(slides[current].id&&history.replaceState)history.replaceState(null,"",`#${slides[current].id}`);
+      }
+      function setCurrent(index){
+        const nextIndex=Math.max(0,Math.min(index,slides.length-1));
+        slides.forEach((slide,i)=>slide.classList.toggle("active",i===nextIndex));
+        current=nextIndex;
+        updateControls();
+      }
+      function showSlide(index,behavior="smooth"){
+        const nextIndex=Math.max(0,Math.min(index,slides.length-1));
+        setCurrent(nextIndex);
+        slides[nextIndex].scrollIntoView({behavior,block:"start"});
+      }
+      function syncCurrentFromScroll(){
+        scrollFrame=null;
+        const marker=window.innerHeight*.35;
+        let visible=0;
+        slides.forEach((slide,i)=>{if(slide.getBoundingClientRect().top<=marker)visible=i});
+        if(visible!==current)setCurrent(visible);
+      }
+      function queueScrollSync(){
+        if(scrollFrame===null)scrollFrame=requestAnimationFrame(syncCurrentFromScroll);
+      }
+      previousButton.addEventListener("click",()=>showSlide(current-1));
+      nextButton.addEventListener("click",()=>showSlide(current+1));
+      window.addEventListener("scroll",queueScrollSync,{passive:true});
+      window.addEventListener("resize",queueScrollSync,{passive:true});
+      async function toggleFullscreen(){
+        try{
+          if(!document.fullscreenElement)await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        }catch(error){console.warn("No se pudo cambiar la pantalla completa.",error)}
+      }
+      fullscreenButton.addEventListener("click",toggleFullscreen);
+      document.addEventListener("fullscreenchange",()=>fullscreenButton.setAttribute("aria-label",document.fullscreenElement?"Salir de pantalla completa":"Entrar en pantalla completa"));
+      document.addEventListener("keydown",event=>{
+        if(event.target.closest("a,button,summary,.reading-body"))return;
+        if(event.key==="ArrowRight"){event.preventDefault();showSlide(current+1)}
+        else if(event.key==="ArrowLeft"){event.preventDefault();showSlide(current-1)}
+        else if(event.key.toLowerCase()==="f"){event.preventDefault();toggleFullscreen()}
+      });
+      const hashIndex=slides.findIndex(slide=>`#${slide.id}`===location.hash);
+      requestAnimationFrame(()=>showSlide(hashIndex>=0?hashIndex:0,"auto"));
+    })();
+  </script>
+</body>
+</html>
